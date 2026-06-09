@@ -10,10 +10,21 @@ TEAM_CHOICES = [
     ('SEN', 'Senegal'), ('NGR', 'Nigeria'), ('GHA', 'Ghana'),
     ('JPN', 'Japan'), ('KOR', 'South Korea'), ('AUS', 'Australia'),
     ('IRN', 'Iran'), ('SAU', 'Saudi Arabia'), ('TBD', 'TBD'),
+    ('RSA', 'South Africa'), ('CZE', 'Czechia'), ('BIH', 'Bosnia and Herzegovina'),
+    ('QAT', 'Qatar'), ('SUI', 'Switzerland'), ('HAI', 'Haiti'),
+    ('SCO', 'Scotland'), ('PAR', 'Paraguay'), ('TUR', 'Türkiye'),
+    ('CUW', 'Curaçao'), ('CIV', "Côte d'Ivoire"), ('ECU', 'Ecuador'),
+    ('SWE', 'Sweden'), ('TUN', 'Tunisia'), ('EGY', 'Egypt'),
+    ('NZL', 'New Zealand'), ('CPV', 'Cape Verde'), ('IRQ', 'Iraq'),
+    ('NOR', 'Norway'), ('ALG', 'Algeria'), ('AUT', 'Austria'),
+    ('JOR', 'Jordan'), ('COD', 'DR Congo'), ('UZB', 'Uzbekistan'),
+    ('COL', 'Colombia'), ('CRO', 'Croatia'), ('PAN', 'Panama'),
+    ('OTHER', 'Other'),
 ]
 
 STAGE_CHOICES = [
     ('GROUP', 'Group Stage'),
+    ('R32', 'Round of 32'),
     ('R16', 'Round of 16'),
     ('QF', 'Quarterfinal'),
     ('SF', 'Semifinal'),
@@ -35,6 +46,13 @@ COUNTRY_FLAG_CODES = {
     'USA': 'us', 'CAN': 'ca', 'MAR': 'ma', 'SEN': 'sn',
     'NGR': 'ng', 'GHA': 'gh', 'JPN': 'jp', 'KOR': 'kr',
     'AUS': 'au', 'IRN': 'ir', 'SAU': 'sa', 'TBD': 'un',
+    'RSA': 'za', 'CZE': 'cz', 'BIH': 'ba', 'QAT': 'qa',
+    'SUI': 'ch', 'HAI': 'ht', 'SCO': 'gb-sct', 'PAR': 'py',
+    'TUR': 'tr', 'CUW': 'cw', 'CIV': 'ci', 'ECU': 'ec',
+    'SWE': 'se', 'TUN': 'tn', 'EGY': 'eg', 'NZL': 'nz',
+    'CPV': 'cv', 'IRQ': 'iq', 'NOR': 'no', 'ALG': 'dz',
+    'AUT': 'at', 'JOR': 'jo', 'COD': 'cd', 'UZB': 'uz',
+    'COL': 'co', 'CRO': 'hr', 'PAN': 'pa', 'OTHER': 'un',
 }
 
 

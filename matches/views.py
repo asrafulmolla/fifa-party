@@ -1,12 +1,22 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
 from django.utils import timezone
+from django.core.cache import cache
 from .models import Match
 from venues.models import WatchVenue
+from .utils import sync_matches_from_api
 from collections import defaultdict
 
 
+def get_synced_matches():
+    """Sync matches from the World Cup 2026 API, cached for 60 seconds."""
+    if not cache.get('matches_synced'):
+        sync_matches_from_api()
+        cache.set('matches_synced', True, 60)
+
+
 def schedule(request):
+    get_synced_matches()
     matches = Match.objects.all().order_by('date_bst')
     
     # Group stage
@@ -19,7 +29,7 @@ def schedule(request):
         else:
             knockout_matches[match.stage].append(match)
 
-    stage_order = ['R16', 'QF', 'SF', 'THIRD', 'FINAL']
+    stage_order = ['R32', 'R16', 'QF', 'SF', 'THIRD', 'FINAL']
     knockout_stages = [(stage, knockout_matches.get(stage, [])) for stage in stage_order if knockout_matches.get(stage)]
 
     # Next match for countdown
@@ -37,6 +47,7 @@ def schedule(request):
 
 
 def match_detail(request, match_id):
+    get_synced_matches()
     match = get_object_or_404(Match, id=match_id)
     venues = WatchVenue.objects.filter(venue_matches__match=match).distinct()
     return render(request, 'matches/detail.html', {
@@ -48,6 +59,7 @@ def match_detail(request, match_id):
 
 def live_scores(request):
     """AJAX endpoint for live scores."""
+    get_synced_matches()
     live = list(Match.objects.filter(status='LIVE').values(
         'id', 'team1_name', 'team2_name', 'team1_score', 'team2_score', 'status'
     ))

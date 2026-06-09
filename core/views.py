@@ -5,11 +5,13 @@ from django.http import JsonResponse
 from django.conf import settings
 from matches.models import Match
 from venues.models import WatchVenue
+from matches.views import get_synced_matches
 from django.utils import timezone
 
 
 def home(request):
     """Home page with full-screen map."""
+    get_synced_matches()
     upcoming_match = Match.objects.filter(
         status='UPCOMING', date_bst__gte=timezone.now()
     ).order_by('date_bst').first()
