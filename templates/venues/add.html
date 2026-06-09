@@ -132,14 +132,20 @@
       {% if matches %}
       <div style="display:flex;flex-direction:column;gap:8px;max-height:320px;overflow-y:auto;padding-right:4px;">
         {% for match in matches %}
-        <label style="display:flex;align-items:center;gap:12px;padding:10px 12px;background:var(--bg-surface-2);border:1px solid var(--border);border-radius:var(--radius-md);cursor:pointer;transition:all 0.15s;" class="match-checkbox-row" id="match-select-{{ match.id }}">
-          <input type="checkbox" name="matches" value="{{ match.id }}" style="accent-color:var(--red);width:16px;height:16px;flex-shrink:0;">
-          <img src="https://flagcdn.com/w20/{{ match.get_team1_flag }}.png" alt="" width="20" height="14" style="border-radius:2px;">
-          <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.9rem;">{{ match.team1_name }}</span>
-          <span style="color:var(--text-muted);font-size:0.82rem;">vs</span>
-          <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.9rem;">{{ match.team2_name }}</span>
-          <img src="https://flagcdn.com/w20/{{ match.get_team2_flag }}.png" alt="" width="20" height="14" style="border-radius:2px;">
-          <span style="margin-left:auto;font-size:0.75rem;color:var(--text-secondary);white-space:nowrap;">{{ match.date_bst|date:"M j, g:i A" }}</span>
+        <label class="match-checkbox-row" id="match-select-{{ match.id }}">
+          <input type="checkbox" name="matches" value="{{ match.id }}" class="match-checkbox">
+          <div class="match-info-compact">
+            <div class="match-teams-compact">
+              <img src="https://flagcdn.com/w20/{{ match.get_team1_flag }}.png" alt="" width="20" height="14" class="team-flag">
+              <span class="team-name team-name-full">{{ match.team1_name }}</span>
+              <span class="team-name team-name-short">{{ match.team1_code }}</span>
+              <span class="vs-text">vs</span>
+              <span class="team-name team-name-full">{{ match.team2_name }}</span>
+              <span class="team-name team-name-short">{{ match.team2_code }}</span>
+              <img src="https://flagcdn.com/w20/{{ match.get_team2_flag }}.png" alt="" width="20" height="14" class="team-flag">
+            </div>
+            <div class="match-date-compact">{{ match.date_bst|date:"M j, g:i A" }}</div>
+          </div>
         </label>
         {% endfor %}
       </div>

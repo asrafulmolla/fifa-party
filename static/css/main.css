@@ -1462,16 +1462,108 @@ input[type="file"].form-control {
 
 /* === FOOTER === */
 .footer {
-  border-top: 1px solid rgba(255,184,28,0.1);
-  padding: 32px 0;
-  text-align: center;
-  color: var(--text-muted);
-  font-size: 0.85rem;
-  background: linear-gradient(0deg, rgba(0,40,94,0.1), transparent);
+  background: var(--fifa-navy);
+  color: rgba(255, 255, 255, 0.7);
+  padding: 64px 0 24px;
+  border-top: 4px solid var(--red);
+  position: relative;
+  overflow: hidden;
 }
 
-.footer a { color: var(--text-secondary); }
-.footer a:hover { color: var(--gold); }
+/* Subtle gold glow behind footer */
+.footer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 800px;
+  height: 1px;
+  box-shadow: 0 0 40px 2px rgba(255,184,28,0.3);
+  pointer-events: none;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 40px;
+  margin-bottom: 48px;
+}
+
+.footer-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: white;
+  letter-spacing: 0.05em;
+  margin-bottom: 16px;
+  text-decoration: none;
+}
+.footer-logo span { color: var(--gold); }
+.footer-logo svg { color: var(--red); }
+
+.footer-desc {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  max-width: 320px;
+}
+
+.footer-heading {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: white;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 20px;
+}
+
+.footer-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.footer-links a {
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: none;
+  font-size: 0.95rem;
+  transition: all var(--transition);
+  display: inline-flex;
+  align-items: center;
+}
+
+.footer-links a:hover {
+  color: var(--gold);
+  transform: translateX(4px);
+}
+
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 0.85rem;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.footer-credit a {
+  color: var(--gold);
+  text-decoration: none;
+  transition: opacity var(--transition);
+}
+.footer-credit a:hover {
+  opacity: 0.8;
+}
 
 /* === UTILITIES === */
 .text-gold { color: var(--gold); }
@@ -1518,6 +1610,62 @@ input[type="file"].form-control {
   *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
 }
 
+/* Add Venue - Match Checkbox Row */
+.match-checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  background: var(--bg-surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.match-checkbox-row:hover {
+  border-color: rgba(255, 184, 28, 0.4);
+  background: rgba(255, 184, 28, 0.05);
+}
+.match-checkbox {
+  accent-color: var(--red);
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+.match-info-compact {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 8px;
+}
+.match-teams-compact {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.match-teams-compact .team-flag { border-radius: 2px; }
+.match-teams-compact .team-name {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+.team-name-short { display: none; }
+
+.match-teams-compact .vs-text {
+  color: var(--text-muted);
+  font-size: 0.82rem;
+}
+.match-date-compact {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  text-align: right;
+}
+
+
 /* === RESPONSIVE === */
 @media (max-width: 1024px) {
   .grid-3 { grid-template-columns: repeat(2, 1fr); }
@@ -1552,6 +1700,25 @@ input[type="file"].form-control {
 
   /* Show mobile-only nav items */
   .nav-mobile-only { display: list-item; }
+
+  /* Map page padding for fixed navbar */
+  .map-info-section { padding: 40px 0 20px !important; }
+
+  /* Footer mobile overrides */
+  .footer { padding: 48px 0 24px; }
+  .footer-grid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+    text-align: center;
+  }
+  .footer-desc {
+    margin: 0 auto;
+  }
+  .footer-bottom {
+    flex-direction: column;
+    text-align: center;
+    justify-content: center;
+  }
 
   /* Map page padding for fixed navbar */
   .map-page { padding-top: 68px !important; }
@@ -1663,6 +1830,24 @@ input[type="file"].form-control {
 
   /* Leaderboard podium */
   .leaderboard-row { padding: 10px 14px; gap: 10px; }
+
+  /* Add Venue - Match selection mobile */
+  .match-info-compact {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+  .match-date-compact {
+    text-align: left;
+    font-size: 0.72rem;
+    margin-left: 28px; /* align with text, bypassing flag */
+  }
+  .match-teams-compact {
+    gap: 6px;
+  }
+  .team-name-full { display: none; }
+  .team-name-short { display: inline; }
+
 
   /* Section padding */
   .section { padding: 40px 0; }
