@@ -9,117 +9,104 @@
 body { overflow: hidden; }
 .page-wrapper { padding-top: 0; }
 
-/* Override Leaflet popup to match dark theme */
+/* ── Leaflet dark skin ── */
+.leaflet-container { background: #001229; }
+.leaflet-control-zoom a {
+  background: rgba(0,18,41,0.95) !important;
+  color: #FFB81C !important;
+  border-color: rgba(255,184,28,0.2) !important;
+}
+.leaflet-control-zoom a:hover { background: rgba(0,40,94,0.9) !important; }
+.leaflet-attribution-flag { display: none !important; }
+.leaflet-control-attribution {
+  background: rgba(0,18,41,0.85) !important;
+  color: #5580A8 !important;
+  font-size: 10px !important;
+}
+.leaflet-control-attribution a { color: #5580A8 !important; }
+
+/* ── Custom popup skin ── */
 .leaflet-popup-content-wrapper {
-  background: #111827;
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 12px;
+  background: rgba(0,18,41,0.97);
+  border: 1px solid rgba(255,184,28,0.2);
+  border-radius: 16px;
   color: #F8FAFC;
-  box-shadow: 0 8px 40px rgba(0,0,0,0.6);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.7);
+  padding: 0;
 }
-.leaflet-popup-tip { background: #111827; }
-.leaflet-popup-content { margin: 14px 16px; min-width: 200px; }
-.leaflet-container { background: #0A0E1A; }
+.leaflet-popup-tip-container { margin-top: -1px; }
+.leaflet-popup-tip { background: rgba(0,18,41,0.97); }
+.leaflet-popup-content { margin: 0; padding: 16px; min-width: 220px; }
+.leaflet-popup-close-button {
+  color: #5580A8 !important;
+  top: 10px !important;
+  right: 12px !important;
+  font-size: 18px !important;
+}
+.leaflet-popup-close-button:hover { color: #FFB81C !important; }
 
-/* Custom football marker */
-.football-marker {
-  background: transparent;
-  border: none;
-}
-.football-pin {
-  width: 36px;
-  height: 44px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  cursor: pointer;
-  filter: drop-shadow(0 3px 6px rgba(0,0,0,0.5));
-  transition: transform 0.15s;
-}
-.football-pin:hover { transform: scale(1.15) translateY(-3px); }
-.football-pin-head {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  border: 2px solid white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 18px;
-  line-height: 1;
-}
-.football-pin-tail {
-  width: 0;
-  height: 0;
-  border-left: 6px solid transparent;
-  border-right: 6px solid transparent;
-}
-.pin-verified .football-pin-head { background: #22C55E; }
-.pin-verified .football-pin-tail { border-top: 8px solid #22C55E; }
-.pin-community .football-pin-head { background: #2563EB; }
-.pin-community .football-pin-tail { border-top: 8px solid #2563EB; }
-.pin-large .football-pin-head { width: 44px; height: 44px; }
-
-/* Popup card styles */
+/* ── Popup styles ── */
 .popup-venue-name {
   font-family: 'Barlow Condensed', sans-serif;
   font-size: 1.05rem;
   font-weight: 800;
-  color: #F8FAFC;
-  margin-bottom: 4px;
+  color: #fff;
+  margin-bottom: 3px;
+  padding-right: 20px;
 }
-.popup-venue-area {
-  font-size: 0.78rem;
-  color: #94A3B8;
-  margin-bottom: 10px;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-.popup-badges {
-  display: flex;
-  gap: 5px;
-  flex-wrap: wrap;
-  margin-bottom: 10px;
-}
-.popup-badge {
-  padding: 2px 8px;
-  border-radius: 100px;
-  font-size: 0.65rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+.popup-area { font-size: 0.78rem; color: #94B8D8; margin-bottom: 10px; display: flex; align-items: center; gap: 4px; }
+.popup-badges { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 12px; }
+.popup-badge { padding: 2px 8px; border-radius: 100px; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; font-family: 'Barlow Condensed', sans-serif; }
+.pb-verified { background: rgba(0,166,81,0.15); color: #22C55E; border: 1px solid rgba(0,166,81,0.3); }
+.pb-community { background: rgba(0,40,94,0.5); color: #94B8D8; border: 1px solid rgba(255,255,255,0.1); }
+.pb-free { background: rgba(0,166,81,0.1); color: #22C55E; border: 1px solid rgba(0,166,81,0.2); }
+.pb-paid { background: rgba(239,51,64,0.1); color: #FF4D5A; border: 1px solid rgba(239,51,64,0.2); }
+.pb-gold { background: rgba(255,184,28,0.1); color: #FFB81C; border: 1px solid rgba(255,184,28,0.2); }
+.popup-footer { display: flex; align-items: center; justify-content: space-between; border-top: 1px solid rgba(255,184,28,0.1); padding-top: 10px; }
+.popup-stars { color: #FFB81C; font-size: 12px; letter-spacing: 1px; }
+.popup-meta { font-size: 0.72rem; color: #5580A8; margin-top: 2px; }
+.popup-btn {
+  display: inline-block; padding: 6px 14px;
+  background: linear-gradient(135deg, #EF3340, #C41E2A);
+  color: white; border-radius: 10px;
   font-family: 'Barlow Condensed', sans-serif;
+  font-size: 0.72rem; font-weight: 700;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  text-decoration: none; transition: all 0.2s;
+  box-shadow: 0 2px 8px rgba(239,51,64,0.35);
 }
-.popup-badge-verified { background: rgba(34,197,94,0.15); color: #22C55E; border: 1px solid rgba(34,197,94,0.3); }
-.popup-badge-community { background: rgba(37,99,235,0.15); color: #60A5FA; border: 1px solid rgba(37,99,235,0.3); }
-.popup-badge-free { background: rgba(34,197,94,0.1); color: #22C55E; border: 1px solid rgba(34,197,94,0.2); }
-.popup-badge-paid { background: rgba(220,38,38,0.1); color: #EF4444; border: 1px solid rgba(220,38,38,0.2); }
-.popup-footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border-top: 1px solid rgba(255,255,255,0.08);
-  padding-top: 10px;
-  margin-top: 8px;
+.popup-btn:hover { filter: brightness(1.1); transform: translateY(-1px); color: white; }
+
+/* ── User location pulse ── */
+.user-location-marker {
+  position: relative;
+  width: 16px;
+  height: 16px;
 }
-.popup-stars { color: #FBBF24; font-size: 11px; }
-.popup-checkins { font-size: 0.75rem; color: #94A3B8; }
-.popup-detail-btn {
-  display: inline-block;
-  padding: 5px 12px;
-  background: #DC2626;
-  color: white;
-  border-radius: 8px;
-  font-family: 'Barlow Condensed', sans-serif;
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  text-decoration: none;
-  transition: background 0.15s;
+.user-location-dot {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 14px; height: 14px;
+  background: #2980D4;
+  border: 3px solid white;
+  border-radius: 50%;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+  z-index: 2;
 }
-.popup-detail-btn:hover { background: #EF4444; color: white; }
+.user-location-pulse {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: rgba(41,128,212,0.4);
+  animation: loc-pulse 2s ease-out infinite;
+}
+@keyframes loc-pulse {
+  0%   { transform: translate(-50%, -50%) scale(1);   opacity: 0.8; }
+  100% { transform: translate(-50%, -50%) scale(3.5); opacity: 0; }
+}
 </style>
 {% endblock %}
 
@@ -127,77 +114,80 @@ body { overflow: hidden; }
 
 {% block content %}
 <div class="map-page">
-  <!-- Filter Bar -->
+  <!-- ── Filter bar ── -->
   <div class="map-filter-bar" id="map-filter-bar" role="toolbar" aria-label="Map filters">
-    <button class="filter-chip active" data-filter="all" id="filter-all" onclick="applyFilter('all', this)">
+    <button class="filter-chip active" data-filter="all" id="filter-all" onclick="applyFilter('all',this)">
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="13" height="13"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
       All Venues
     </button>
-    <button class="filter-chip" data-filter="free" id="filter-free" onclick="applyFilter('free', this)">
+    <button class="filter-chip" data-filter="free" id="filter-free" onclick="applyFilter('free',this)">
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="13" height="13"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
       Free Entry
     </button>
-    <button class="filter-chip" data-filter="verified" id="filter-verified" onclick="applyFilter('verified', this)">
+    <button class="filter-chip" data-filter="verified" id="filter-verified" onclick="applyFilter('verified',this)">
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="13" height="13"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/></svg>
       Verified
     </button>
     <button class="filter-chip" id="filter-heatmap" onclick="toggleHeatmap(this)">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="13" height="13"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.879 16.121A3 3 0 1012.015 11L11 14H9c0 .768.293 1.536.879 2.121z"/></svg>
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="13" height="13"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z"/></svg>
       Heatmap
     </button>
-    <a href="/venues/add/" class="filter-chip" id="filter-add-venue" style="background:var(--red);color:white;border-color:var(--red);">
+    <button class="filter-chip" id="filter-myloc" onclick="goToMyLocation()" title="Show my location">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="13" height="13"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><circle cx="12" cy="11" r="3" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/></svg>
+      My Location
+    </button>
+    <a href="/venues/add/" class="filter-chip" style="background:var(--red);color:white;border-color:var(--red);">
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="13" height="13"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-      Add Yours
+      Add Venue
     </a>
   </div>
 
-  <!-- Countdown Widget -->
-  {% if next_match %}
-  <div class="countdown-widget" id="countdown-widget">
-    <div class="countdown-label">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="12" height="12"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-      Next Match
-    </div>
-    <div class="countdown-match" id="countdown-match-name">
-      {{ next_match.team1_name }} vs {{ next_match.team2_name }}
-    </div>
-    <div class="countdown-timer" id="countdown-timer">
-      <div class="countdown-unit">
-        <span class="countdown-number" id="cd-hours">--</span>
-        <div class="countdown-unit-label">HRS</div>
-      </div>
-      <div class="countdown-sep">:</div>
-      <div class="countdown-unit">
-        <span class="countdown-number" id="cd-mins">--</span>
-        <div class="countdown-unit-label">MIN</div>
-      </div>
-      <div class="countdown-sep">:</div>
-      <div class="countdown-unit">
-        <span class="countdown-number" id="cd-secs">--</span>
-        <div class="countdown-unit-label">SEC</div>
-      </div>
-    </div>
-    <div class="countdown-venues" id="countdown-venues">Loading venues...</div>
-    <a href="/schedule/" class="btn btn-ghost btn-sm w-full" style="margin-top:10px;font-size:0.72rem;">View Full Schedule</a>
-  </div>
-  {% else %}
-  <!-- No upcoming match - show live match or empty state -->
-  <div class="countdown-widget" id="countdown-widget">
-    <div class="countdown-label">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="12" height="12"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/></svg>
-      Watch Parties
-    </div>
-    <div id="venue-total-count" style="font-family:'Barlow Condensed',sans-serif;font-size:2rem;font-weight:900;color:var(--gold);text-align:center;margin:8px 0;">
-      {{ venues_json|length }}
-    </div>
-    <div style="font-size:0.78rem;color:var(--text-secondary);text-align:center;">venues on the map</div>
-    <a href="/venues/add/" class="btn btn-primary btn-sm w-full" style="margin-top:12px;">+ Add Your Venue</a>
-  </div>
-  {% endif %}
-
-  <!-- Map -->
+  <!-- ── Map container (countdown lives inside, above the map) ── -->
   <div class="map-container" id="map-container">
     <div id="map"></div>
+
+    <!-- Countdown widget — INSIDE map-container so z-index works against Leaflet -->
+    {% if next_match %}
+    <div class="countdown-widget" id="countdown-widget">
+      <div class="countdown-label">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="12" height="12"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        Next Match
+      </div>
+      <div class="countdown-match">
+        {{ next_match.team1_name }} vs {{ next_match.team2_name }}
+      </div>
+      <div class="countdown-timer">
+        <div class="countdown-unit">
+          <span class="countdown-number" id="cd-hours">--</span>
+          <div class="countdown-unit-label">HRS</div>
+        </div>
+        <div class="countdown-sep">:</div>
+        <div class="countdown-unit">
+          <span class="countdown-number" id="cd-mins">--</span>
+          <div class="countdown-unit-label">MIN</div>
+        </div>
+        <div class="countdown-sep">:</div>
+        <div class="countdown-unit">
+          <span class="countdown-number" id="cd-secs">--</span>
+          <div class="countdown-unit-label">SEC</div>
+        </div>
+      </div>
+      <div class="countdown-venues" id="countdown-venues">Loading venues...</div>
+      <a href="/schedule/" class="btn btn-ghost btn-sm w-full" style="margin-top:10px;font-size:0.72rem;">View Full Schedule →</a>
+    </div>
+    {% else %}
+    <div class="countdown-widget" id="countdown-widget">
+      <div class="countdown-label">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="12" height="12"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+        Watch Parties
+      </div>
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:2.4rem;font-weight:900;color:var(--gold);text-align:center;line-height:1;margin:8px 0;">
+        {{ venues_json|length }}
+      </div>
+      <div style="font-size:0.78rem;color:var(--text-secondary);text-align:center;margin-bottom:12px;">venues on the map</div>
+      <a href="/venues/add/" class="btn btn-primary btn-sm w-full">+ Add Your Venue</a>
+    </div>
+    {% endif %}
   </div>
 </div>
 {% endblock %}
@@ -205,163 +195,186 @@ body { overflow: hidden; }
 {% block extra_js %}
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 <script>
-// ======= Data =======
+// ═══════════════════════ DATA ═══════════════════════
 const VENUES = {{ venues_json|safe }};
-
 {% if next_match %}
 const NEXT_MATCH_DATE = new Date("{{ next_match.date_bst.isoformat }}");
 {% else %}
 const NEXT_MATCH_DATE = null;
 {% endif %}
 
-// ======= Map Init =======
+// ═══════════════════════ MAP ═══════════════════════
 const DHAKA = [23.8103, 90.4125];
 
 const map = L.map('map', {
   center: DHAKA,
   zoom: 12,
   zoomControl: false,
-}).setView(DHAKA, 12);
+});
 
-// Dark tile layer (CartoDB Dark Matter — free, no API key)
+// Dark CartoDB tile — no API key needed
 L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-  attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+  attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> © <a href="https://carto.com/attributions">CARTO</a>',
   subdomains: 'abcd',
   maxZoom: 20,
 }).addTo(map);
 
-// Custom zoom control (bottom-right)
+// Zoom control bottom-right
 L.control.zoom({ position: 'bottomright' }).addTo(map);
 
-// Geolocation
-if (navigator.geolocation) {
+// ═══════════════════════ USER LOCATION ═══════════════════════
+let userMarker = null;
+
+function showUserLocation(lat, lng) {
+  if (userMarker) map.removeLayer(userMarker);
+
+  const pulseIcon = L.divIcon({
+    className: '',
+    html: `<div class="user-location-marker">
+             <div class="user-location-pulse"></div>
+             <div class="user-location-dot"></div>
+           </div>`,
+    iconSize: [24, 24],
+    iconAnchor: [12, 12],
+    popupAnchor: [0, -16],
+  });
+
+  userMarker = L.marker([lat, lng], { icon: pulseIcon, zIndexOffset: 1000 })
+    .addTo(map)
+    .bindPopup('<div style="font-family:\'Barlow Condensed\',sans-serif;font-weight:700;color:#2980D4;">📍 You are here</div>', { maxWidth: 160 });
+}
+
+function goToMyLocation() {
+  if (!navigator.geolocation) return;
   navigator.geolocation.getCurrentPosition(
-    pos => map.setView([pos.coords.latitude, pos.coords.longitude], 13),
-    () => {} // default to Dhaka
+    pos => {
+      const { latitude: lat, longitude: lng } = pos.coords;
+      showUserLocation(lat, lng);
+      map.flyTo([lat, lng], 14, { animate: true, duration: 1.2 });
+    },
+    () => alert('Could not get your location. Please allow location access.')
   );
 }
 
-// ======= Markers =======
+// Auto-detect location on load (silently)
+if (navigator.geolocation) {
+  navigator.geolocation.getCurrentPosition(
+    pos => {
+      const { latitude: lat, longitude: lng } = pos.coords;
+      showUserLocation(lat, lng);
+      map.setView([lat, lng], 13);
+    },
+    () => {} // silently fall back to Dhaka
+  );
+}
+
+// ═══════════════════════ MARKERS ═══════════════════════
 let markerLayer = L.layerGroup().addTo(map);
-let heatmapLayer = null;
-let heatmapOn = false;
 
-function buildPopupHtml(v) {
-  const verifiedBadge = v.verified
-    ? `<span class="popup-badge popup-badge-verified">✓ Verified</span>`
-    : `<span class="popup-badge popup-badge-community">Community</span>`;
-  const entryBadge = v.entry_code === 'FREE'
-    ? `<span class="popup-badge popup-badge-free">Free</span>`
-    : `<span class="popup-badge popup-badge-paid">${v.entry_type}</span>`;
-  const stars = '★'.repeat(Math.round(v.rating || 0)) + '☆'.repeat(5 - Math.round(v.rating || 0));
-
+function buildPopup(v) {
+  const starsFilled = '★'.repeat(Math.round(v.rating || 0));
+  const starsEmpty  = '☆'.repeat(5 - Math.round(v.rating || 0));
   return `
     <div class="popup-venue-name">${v.name}</div>
-    <div class="popup-venue-area">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="11" height="11"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+    <div class="popup-area">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="11" height="11"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/></svg>
       ${v.area}
     </div>
     <div class="popup-badges">
-      ${verifiedBadge}
-      ${entryBadge}
-      <span class="popup-badge popup-badge-community">${v.screen_size}</span>
-      <span class="popup-badge popup-badge-community">${v.crowd_capacity}</span>
+      ${v.verified ? '<span class="popup-badge pb-verified">✓ Verified</span>' : '<span class="popup-badge pb-community">Community</span>'}
+      ${v.entry_code === 'FREE' ? '<span class="popup-badge pb-free">Free</span>' : '<span class="popup-badge pb-paid">' + v.entry_type + '</span>'}
+      <span class="popup-badge pb-gold">${v.screen_size}</span>
     </div>
     <div class="popup-footer">
       <div>
-        <div class="popup-stars">${stars}</div>
-        <div class="popup-checkins">${v.checkin_count} going · by ${v.submitted_by}</div>
+        <div class="popup-stars">${starsFilled}${starsEmpty}</div>
+        <div class="popup-meta">${v.checkin_count} going · ${v.submitted_by}</div>
       </div>
-      <a href="/venues/${v.id}/" class="popup-detail-btn">Details →</a>
+      <a href="/venues/${v.id}/" class="popup-btn">Details →</a>
     </div>`;
 }
 
-function createMarkerIcon(v) {
-  const size = Math.min(36 + v.checkin_count * 2, 52);
-  const pinClass = v.verified ? 'pin-verified' : 'pin-community';
-  const html = `<div class="football-pin ${pinClass}" style="width:${size}px;height:${size+8}px;">
-    <div class="football-pin-head" style="width:${size}px;height:${size}px;">⚽</div>
-    <div class="football-pin-tail"></div>
-  </div>`;
+function makeIcon(v) {
+  const size = Math.min(34 + v.checkin_count * 2, 50);
+  const color = v.verified ? '#00A651' : '#00285E';
+  const glow  = v.verified ? 'rgba(0,166,81,0.6)' : 'rgba(0,40,94,0.7)';
   return L.divIcon({
-    className: 'football-marker',
-    html,
-    iconSize: [size, size + 8],
-    iconAnchor: [size / 2, size + 8],
-    popupAnchor: [0, -(size + 8)],
+    className: '',
+    html: `<div style="
+        width:${size}px;height:${size}px;
+        background:radial-gradient(circle at 35% 35%, ${color}ee, ${color}99);
+        border:2.5px solid rgba(255,184,28,0.7);
+        border-radius:50% 50% 50% 0;
+        transform:rotate(-45deg);
+        box-shadow:0 3px 12px ${glow};
+        display:flex;align-items:center;justify-content:center;
+        font-size:${Math.round(size*0.45)}px;
+      "><span style="transform:rotate(45deg);">⚽</span></div>`,
+    iconSize: [size, size],
+    iconAnchor: [size / 2, size],
+    popupAnchor: [0, -size],
   });
 }
 
 function renderMarkers(venues) {
   markerLayer.clearLayers();
-  venues.forEach(v => {
-    const marker = L.marker([v.lat, v.lng], { icon: createMarkerIcon(v) });
-    marker.bindPopup(buildPopupHtml(v), {
-      maxWidth: 280,
-      className: 'dark-popup',
-    });
-    markerLayer.addLayer(marker);
+  venues.forEach((v, i) => {
+    L.marker([v.lat, v.lng], { icon: makeIcon(v) })
+      .bindPopup(buildPopup(v), { maxWidth: 280 })
+      .addTo(markerLayer);
   });
 }
 
 renderMarkers(VENUES);
 
-// ======= Heatmap (simple circle overlay) =======
+// ═══════════════════════ HEATMAP ═══════════════════════
 let heatCircles = L.layerGroup();
 VENUES.forEach(v => {
-  const intensity = Math.min(0.3 + v.checkin_count * 0.05, 0.8);
+  const intensity = Math.min(0.25 + v.checkin_count * 0.06, 0.75);
   L.circle([v.lat, v.lng], {
-    radius: 400,
-    fillColor: '#DC2626',
+    radius: 450,
+    fillColor: '#EF3340',
     fillOpacity: intensity,
     stroke: false,
   }).addTo(heatCircles);
 });
 
+let heatmapOn = false;
 function toggleHeatmap(btn) {
   heatmapOn = !heatmapOn;
-  if (heatmapOn) {
-    heatCircles.addTo(map);
-    btn.classList.add('active');
-  } else {
-    map.removeLayer(heatCircles);
-    btn.classList.remove('active');
-  }
+  heatmapOn ? heatCircles.addTo(map) : map.removeLayer(heatCircles);
+  btn.classList.toggle('active', heatmapOn);
 }
 
-// ======= Filters =======
+// ═══════════════════════ FILTERS ═══════════════════════
 function applyFilter(filter, btn) {
-  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+  document.querySelectorAll('.filter-chip').forEach(c => {
+    if (c.dataset.filter !== undefined) c.classList.remove('active');
+  });
   btn.classList.add('active');
 
-  let filtered = VENUES;
-  if (filter === 'free') filtered = VENUES.filter(v => v.entry_code === 'FREE');
-  if (filter === 'verified') filtered = VENUES.filter(v => v.verified);
+  const filtered =
+    filter === 'free'     ? VENUES.filter(v => v.entry_code === 'FREE') :
+    filter === 'verified' ? VENUES.filter(v => v.verified) :
+    VENUES;
+
   renderMarkers(filtered);
 }
 
-// ======= Countdown =======
+// ═══════════════════════ COUNTDOWN ═══════════════════════
 {% if next_match %}
-function tickCountdown() {
-  if (!NEXT_MATCH_DATE) return;
+(function tick() {
   const diff = NEXT_MATCH_DATE - new Date();
-  if (diff <= 0) return;
-
-  const fmt = n => String(Math.floor(n)).padStart(2, '0');
-  const h = fmt(diff / 3600000);
-  const m = fmt((diff % 3600000) / 60000);
-  const s = fmt((diff % 60000) / 1000);
-
-  document.getElementById('cd-hours').textContent = h;
-  document.getElementById('cd-mins').textContent = m;
-  document.getElementById('cd-secs').textContent = s;
-
-  if (diff < 60000) {
-    document.querySelectorAll('.countdown-number').forEach(el => el.classList.add('final-minute'));
+  if (diff > 0) {
+    const fmt = n => String(Math.floor(n)).padStart(2, '0');
+    document.getElementById('cd-hours').textContent = fmt(diff / 3600000);
+    document.getElementById('cd-mins').textContent  = fmt((diff % 3600000) / 60000);
+    document.getElementById('cd-secs').textContent  = fmt((diff % 60000) / 1000);
+    if (diff < 60000)
+      document.querySelectorAll('.countdown-number').forEach(el => el.classList.add('final-minute'));
   }
-}
-tickCountdown();
-setInterval(tickCountdown, 1000);
+  setTimeout(tick, 1000);
+})();
 
 const venueEl = document.getElementById('countdown-venues');
 if (venueEl) venueEl.textContent = `${VENUES.length} venue${VENUES.length !== 1 ? 's' : ''} screening`;

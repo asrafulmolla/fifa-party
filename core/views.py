@@ -27,6 +27,7 @@ def home(request):
             'lat': v.latitude,
             'lng': v.longitude,
             'entry_type': v.get_entry_type_display(),
+            'entry_code': v.entry_type,
             'screen_size': v.get_screen_size_display(),
             'crowd_capacity': v.get_crowd_capacity_display(),
             'verified': v.verified,
