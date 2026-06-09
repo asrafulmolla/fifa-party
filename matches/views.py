@@ -37,11 +37,60 @@ def schedule(request):
         status='UPCOMING', date_bst__gte=timezone.now()
     ).order_by('date_bst').first()
 
+    # Calculate Group Standings
+    standings = {}
+    for group, grp_matches in group_matches.items():
+        if not group:
+            continue
+        table = {}
+        for match in grp_matches:
+            # Initialize teams in the table
+            if match.team1_code not in table and match.team1_code != 'TBD':
+                table[match.team1_code] = {'name': match.team1_name, 'flag': match.get_team1_flag(), 'pld': 0, 'w': 0, 'd': 0, 'l': 0, 'gf': 0, 'ga': 0, 'gd': 0, 'pts': 0}
+            if match.team2_code not in table and match.team2_code != 'TBD':
+                table[match.team2_code] = {'name': match.team2_name, 'flag': match.get_team2_flag(), 'pld': 0, 'w': 0, 'd': 0, 'l': 0, 'gf': 0, 'ga': 0, 'gd': 0, 'pts': 0}
+
+            # If match is completed or live, update stats
+            if match.status in ['COMPLETED', 'LIVE'] and match.team1_score is not None and match.team2_score is not None:
+                t1 = table.get(match.team1_code)
+                t2 = table.get(match.team2_code)
+                
+                if t1 and t2:
+                    t1['pld'] += 1
+                    t2['pld'] += 1
+                    t1['gf'] += match.team1_score
+                    t1['ga'] += match.team2_score
+                    t2['gf'] += match.team2_score
+                    t2['ga'] += match.team1_score
+                    
+                    if match.team1_score > match.team2_score:
+                        t1['w'] += 1
+                        t1['pts'] += 3
+                        t2['l'] += 1
+                    elif match.team2_score > match.team1_score:
+                        t2['w'] += 1
+                        t2['pts'] += 3
+                        t1['l'] += 1
+                    else:
+                        t1['d'] += 1
+                        t2['d'] += 1
+                        t1['pts'] += 1
+                        t2['pts'] += 1
+                        
+        # Calculate Goal Difference and sort
+        for code, data in table.items():
+            data['gd'] = data['gf'] - data['ga']
+            
+        # Sort by Points (desc), Goal Difference (desc), Goals For (desc)
+        sorted_table = sorted(table.values(), key=lambda x: (x['pts'], x['gd'], x['gf']), reverse=True)
+        standings[group] = sorted_table
+
     return render(request, 'matches/schedule.html', {
         'group_matches': dict(sorted(group_matches.items())),
         'knockout_stages': knockout_stages,
         'next_match': next_match,
         'has_knockouts': bool(knockout_matches),
+        'standings': dict(sorted(standings.items())),
         'page_title': 'Match Schedule | FIFA Party Bangladesh',
     })
 

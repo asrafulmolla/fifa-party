@@ -51,6 +51,9 @@
     <button class="schedule-tab active" data-tab="groups" id="tab-groups" onclick="switchTab('groups', this)">
       Group Stage
     </button>
+    <button class="schedule-tab" data-tab="standings" id="tab-standings" onclick="switchTab('standings', this)">
+      Standings
+    </button>
     {% if has_knockouts %}
     <button class="schedule-tab" data-tab="knockouts" id="tab-knockouts" onclick="switchTab('knockouts', this)">
       Knockout Bracket
@@ -191,6 +194,59 @@
       <p style="font-family:'Barlow Condensed',sans-serif;font-size:1.2rem;font-weight:700;">Knockout stage not yet available</p>
       <p style="font-size:0.85rem;margin-top:6px;">The bracket will appear after the group stage concludes.</p>
     </div>
+    {% endif %}
+  </div>
+
+  <!-- Standings -->
+  <div id="panel-standings" class="tab-panel" style="display:none;">
+    {% if standings %}
+      {% for group, table in standings.items %}
+      <div style="margin-bottom:36px; background:var(--bg-surface); border:1px solid var(--border); border-radius:var(--radius-lg); padding:20px;">
+        <div class="group-header" style="margin-bottom:10px;">
+          <div class="group-letter">{{ group }}</div>
+          <h3 style="font-size:1rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-secondary);">Group {{ group }} Standings</h3>
+        </div>
+        <div style="overflow-x:auto;">
+          <table class="standings-table">
+            <thead>
+              <tr>
+                <th>Team</th>
+                <th>P</th>
+                <th>W</th>
+                <th>D</th>
+                <th>L</th>
+                <th>GF</th>
+                <th>GA</th>
+                <th>GD</th>
+                <th>Pts</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for team in table %}
+              <tr>
+                <td>
+                  <div class="team-name-cell">
+                    <img src="https://flagcdn.com/w40/{{ team.flag }}.png" alt="{{ team.name }}" width="20" height="14" style="border-radius:2px;" onerror="this.style.display='none'">
+                    {{ team.name }}
+                  </div>
+                </td>
+                <td>{{ team.pld }}</td>
+                <td>{{ team.w }}</td>
+                <td>{{ team.d }}</td>
+                <td>{{ team.l }}</td>
+                <td>{{ team.gf }}</td>
+                <td>{{ team.ga }}</td>
+                <td>{{ team.gd }}</td>
+                <td class="pts-cell">{{ team.pts }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      {% endfor %}
+    {% else %}
+      <p style="color:var(--text-muted);text-align:center;padding:40px 0;">Standings will be available once the tournament begins.</p>
     {% endif %}
   </div>
 

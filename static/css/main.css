@@ -1254,9 +1254,118 @@ input[type="file"].form-control {
 
 .bracket-team:first-child { border-bottom: 1px solid var(--border); }
 
+/* Schedule Tabs */
+.schedule-tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 24px;
+  overflow-x: auto;
+  padding-bottom: 8px; /* For scrollbar */
+  -webkit-overflow-scrolling: touch;
+}
+.schedule-tabs::-webkit-scrollbar {
+  height: 4px;
+}
+.schedule-tabs::-webkit-scrollbar-track {
+  background: rgba(255,255,255,0.05);
+  border-radius: 4px;
+}
+.schedule-tabs::-webkit-scrollbar-thumb {
+  background: rgba(255,184,28,0.3);
+  border-radius: 4px;
+}
+
+.schedule-tab {
+  padding: 10px 20px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  color: var(--text-secondary);
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+.schedule-tab:hover {
+  background: rgba(255,255,255,0.05);
+  color: var(--text-primary);
+}
+.schedule-tab.active {
+  background: rgba(255,184,28,0.1);
+  border-color: var(--gold);
+  color: var(--gold);
+  box-shadow: 0 0 15px rgba(255,184,28,0.15);
+}
+
 .bracket-team.winner {
-  background: rgba(0,166,81,0.1);
-  color: var(--green-light);
+  background: var(--gold);
+  color: var(--bg-surface);
+}
+
+/* Standings Table */
+.standings-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+.standings-table th {
+  text-align: center;
+  padding: 10px 8px;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.standings-table th:first-child { text-align: left; }
+.standings-table td {
+  text-align: center;
+  padding: 12px 8px;
+  font-size: 0.95rem;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.standings-table td:first-child { text-align: left; }
+.standings-table tr:last-child td { border-bottom: none; }
+.standings-table tbody tr { transition: background 0.2s; }
+.standings-table tbody tr:hover { background: rgba(255,255,255,0.02); }
+.standings-table tbody tr:nth-child(1) td:first-child,
+.standings-table tbody tr:nth-child(2) td:first-child {
+  border-left: 3px solid var(--gold);
+  padding-left: 5px;
+}
+.team-name-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+}
+.pts-cell {
+  font-weight: 700;
+  color: var(--gold);
+}
+
+@media (max-width: 576px) {
+  .standings-table th, .standings-table td {
+    padding: 8px 4px;
+    font-size: 0.85rem;
+  }
+  .team-name-cell {
+    gap: 5px;
+    font-size: 0.85rem;
+  }
+  .team-name-cell img {
+    width: 16px;
+    height: 11px;
+  }
+  .schedule-tab {
+    padding: 8px 14px;
+    font-size: 0.85rem;
+  }
 }
 
 .bracket-score { margin-left: auto; font-size: 0.95rem; font-weight: 900; }
