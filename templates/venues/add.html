@@ -1,14 +1,19 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block body_class %}theme-pele{% endblock %}
+
 {% block extra_css %}
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
 <style>
-.leaflet-container { background: #0A0E1A; }
+.leaflet-container { background: var(--bg-primary); }
 #pin-map .leaflet-control-zoom a {
-  background: #111827;
-  color: #F8FAFC;
-  border-color: rgba(255,255,255,0.1);
+  background: var(--bg-surface) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border) !important;
+}
+#pin-map .leaflet-control-zoom a:hover {
+  background: var(--bg-surface-2) !important;
 }
 </style>
 {% endblock %}
@@ -103,8 +108,18 @@
         </h3>
         <span id="pin-coords-display" style="font-size:0.8rem;color:var(--text-muted);">Click map to drop pin</span>
       </div>
-      <div id="pin-map" style="width:100%;height:360px;border-radius:var(--radius-md);overflow:hidden;"></div>
-      <p style="margin-top:8px;font-size:0.78rem;color:var(--text-muted);">Click anywhere on the map to place your venue pin. Drag to reposition.</p>
+      <div style="position:relative;width:100%;height:360px;border-radius:var(--radius-md);overflow:hidden;border:1px solid var(--border);">
+        <!-- Search Location Widget -->
+        <div style="position:absolute;top:12px;left:12px;z-index:9999;display:flex;align-items:center;background:rgba(255,255,255,0.95);backdrop-filter:blur(12px);border:1px solid rgba(0,40,94,0.12);border-radius:30px;padding:4px 8px;box-shadow:var(--shadow-md);width:280px;max-width:calc(100% - 24px);">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="14" height="14" style="color:var(--text-muted);margin-right:6px;flex-shrink:0;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+          <input type="text" id="picker-search-input" placeholder="Search area/landmark in BD..." style="border:none;background:transparent;outline:none;font-size:0.8rem;color:var(--text-primary);width:100%;font-family:inherit;" onkeydown="if(event.key==='Enter') { event.preventDefault(); searchPickerLocation(); }">
+          <button type="button" onclick="searchPickerLocation()" class="btn btn-primary btn-sm" style="padding:4px 8px;border-radius:20px;font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;flex-shrink:0;height:auto;line-height:1.2;">Search</button>
+        </div>
+        <div id="picker-search-feedback" style="display:none;position:absolute;top:54px;left:12px;z-index:9999;padding:6px 10px;background:rgba(255,255,255,0.95);border:1px solid var(--border);border-radius:8px;font-size:0.7rem;box-shadow:var(--shadow-sm);max-width:calc(100% - 24px);"></div>
+
+        <div id="pin-map" style="width:100%;height:100%;"></div>
+      </div>
+      <p style="margin-top:8px;font-size:0.78rem;color:var(--text-muted);">Search above or click anywhere on the map to place your venue pin. Drag to reposition.</p>
       <input type="hidden" id="latitude" name="latitude">
       <input type="hidden" id="longitude" name="longitude">
     </div>
@@ -152,7 +167,7 @@
 // ======= Leaflet Pin Picker =======
 const pinMap = L.map('pin-map', { zoomControl: true }).setView([23.8103, 90.4125], 12);
 
-L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
   attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
   subdomains: 'abcd',
   maxZoom: 20,
@@ -167,6 +182,70 @@ const pinIcon = L.divIcon({
   iconAnchor: [16, 32],
   popupAnchor: [0, -36],
 });
+
+function searchPickerLocation() {
+  const query = document.getElementById('picker-search-input').value.trim();
+  if (!query) return;
+
+  showPickerFeedback('Searching...', 'info');
+
+  const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}, Bangladesh`;
+  fetch(url)
+    .then(res => res.json())
+    .then(data => {
+      if (data && data.length > 0) {
+        const result = data[0];
+        const lat = parseFloat(result.lat);
+        const lng = parseFloat(result.lon);
+
+        pinMap.setView([lat, lng], 15);
+
+        if (pinMarker) {
+          pinMarker.setLatLng([lat, lng]);
+        } else {
+          pinMarker = L.marker([lat, lng], { icon: pinIcon, draggable: true }).addTo(pinMap);
+          pinMarker.on('dragend', function() {
+            const pos = pinMarker.getLatLng();
+            setCoords(pos.lat, pos.lng);
+          });
+        }
+        setCoords(lat, lng);
+
+        showPickerFeedback(`Centred at: ${result.display_name.split(',')[0]}`, 'success');
+      } else {
+        showPickerFeedback('Location not found.', 'error');
+      }
+    })
+    .catch(err => {
+      showPickerFeedback('Search failed. Check network connection.', 'error');
+    });
+}
+
+function showPickerFeedback(text, type) {
+  const el = document.getElementById('picker-search-feedback');
+  el.textContent = text;
+  el.style.display = 'block';
+
+  if (type === 'error') {
+    el.style.color = 'var(--red)';
+    el.style.borderColor = 'rgba(239, 51, 64, 0.2)';
+    el.style.background = 'rgba(239, 51, 64, 0.05)';
+  } else if (type === 'success') {
+    el.style.color = 'var(--green-dark)';
+    el.style.borderColor = 'rgba(0, 166, 81, 0.2)';
+    el.style.background = 'rgba(0, 166, 81, 0.05)';
+  } else {
+    el.style.color = 'var(--text-secondary)';
+    el.style.borderColor = 'var(--border)';
+    el.style.background = 'var(--bg-surface-2)';
+  }
+
+  if (type !== 'info') {
+    setTimeout(() => {
+      el.style.display = 'none';
+    }, 4000);
+  }
+}
 
 pinMap.on('click', function(e) {
   const { lat, lng } = e.latlng;

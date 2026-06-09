@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block body_class %}theme-yamal{% endblock %}
+
 {% block content %}
 <div class="page-wrapper">
 <div class="container" style="max-width:900px;">
@@ -27,7 +29,7 @@
 
       <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px;">
         {% if profile.supported_team %}
-        <img src="https://flagcdn.com/w28/{{ profile.get_flag_code }}.png" alt="{{ profile.get_supported_team_display }}" width="28" height="20" style="border-radius:3px;">
+        <img src="https://flagcdn.com/w40/{{ profile.get_flag_code }}.png" alt="{{ profile.get_supported_team_display }}" width="28" height="20" style="border-radius:3px;">
         <span style="color:var(--text-secondary);font-size:0.85rem;">Supporting {{ profile.get_supported_team_display }}</span>
         {% endif %}
         <span style="color:var(--text-muted);font-size:0.75rem;">· Joined {{ profile_user.date_joined|date:"M Y" }}</span>

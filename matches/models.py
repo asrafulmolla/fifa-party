@@ -45,7 +45,7 @@ COUNTRY_FLAG_CODES = {
     'ITA': 'it', 'BEL': 'be', 'URU': 'uy', 'MEX': 'mx',
     'USA': 'us', 'CAN': 'ca', 'MAR': 'ma', 'SEN': 'sn',
     'NGR': 'ng', 'GHA': 'gh', 'JPN': 'jp', 'KOR': 'kr',
-    'AUS': 'au', 'IRN': 'ir', 'SAU': 'sa', 'TBD': 'un',
+    'AUS': 'au', 'IRN': 'ir', 'SAU': 'sa', 'KSA': 'sa', 'TBD': 'un',
     'RSA': 'za', 'CZE': 'cz', 'BIH': 'ba', 'QAT': 'qa',
     'SUI': 'ch', 'HAI': 'ht', 'SCO': 'gb-sct', 'PAR': 'py',
     'TUR': 'tr', 'CUW': 'cw', 'CIV': 'ci', 'ECU': 'ec',

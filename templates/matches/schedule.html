@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block body_class %}theme-messi{% endblock %}
+
 {% block title %}Match Schedule | FIFA Party Bangladesh{% endblock %}
 
 {% block content %}
@@ -67,7 +69,7 @@
         <a href="/schedule/{{ match.id }}/" class="match-row status-{{ match.status|lower }}" style="text-decoration:none;" id="match-{{ match.id }}">
           <!-- Team 1 -->
           <div class="team-side">
-            <img src="https://flagcdn.com/w28/{{ match.get_team1_flag }}.png" alt="{{ match.team1_name }}" width="28" height="20" class="team-flag" onerror="this.style.display='none'">
+            <img src="https://flagcdn.com/w40/{{ match.get_team1_flag }}.png" alt="{{ match.team1_name }}" width="28" height="20" class="team-flag" onerror="this.style.display='none'">
             <span class="team-name">{{ match.team1_name }}</span>
           </div>
           <!-- Score / Time -->
@@ -89,7 +91,7 @@
           <!-- Team 2 -->
           <div class="team-side right">
             <span class="team-name">{{ match.team2_name }}</span>
-            <img src="https://flagcdn.com/w28/{{ match.get_team2_flag }}.png" alt="{{ match.team2_name }}" width="28" height="20" class="team-flag" onerror="this.style.display='none'">
+            <img src="https://flagcdn.com/w40/{{ match.get_team2_flag }}.png" alt="{{ match.team2_name }}" width="28" height="20" class="team-flag" onerror="this.style.display='none'">
           </div>
           <!-- Stadium -->
           <div style="text-align:right;min-width:90px;">
