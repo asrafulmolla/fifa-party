@@ -50,6 +50,9 @@ def sync_matches_from_api():
             'final': 'FINAL',
         }
 
+        # Remove seed-only rows (no match_id) that would cause duplicates with API data
+        Match.objects.filter(match_id__isnull=True).delete()
+
         # Sync all matches
         for game in games_data.get('games', []):
             game_id = int(game['id'])
