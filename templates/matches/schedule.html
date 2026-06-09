@@ -8,6 +8,8 @@
 {% block content %}
 <div class="page-wrapper">
 <div class="container">
+  
+  <div id="schedule-data" data-next-match="{% if next_match %}{{ next_match.date_bst.isoformat }}{% endif %}" style="display:none;"></div>
 
   <!-- Header -->
   <div class="section-header" style="padding: 40px 0 24px;">
@@ -161,7 +163,7 @@
             {% else %}{{ stage_code }}{% endif %}
           </div>
           {% for match in stage_matches %}
-          <div class="bracket-match" style="animation-delay: {{ forloop.counter0|add:'0' }}00ms;">
+          <div class="bracket-match" style="--delay: {{ forloop.counter0 }}; animation-delay: calc(var(--delay) * 100ms);">
             <a href="/schedule/{{ match.id }}/" style="display:block;text-decoration:none;">
               <div class="bracket-team {% if match.status == 'COMPLETED' and match.team1_score > match.team2_score %}winner{% endif %}">
                 <img src="https://flagcdn.com/w20/{{ match.get_team1_flag }}.png" alt="{{ match.team1_name }}" width="20" height="14" style="border-radius:2px;" onerror="this.style.display='none'">
@@ -324,18 +326,19 @@ function switchTab(tab, btn) {
 }
 
 // Schedule countdown
-{% if next_match %}
-const schedNextMatch = new Date("{{ next_match.date_bst.isoformat }}");
-function tickSchedule() {
-  const diff = schedNextMatch - new Date();
-  if (diff <= 0) return;
-  const fmt = n => String(Math.floor(n)).padStart(2, '0');
-  document.getElementById('sc-h').textContent = fmt(diff / 3600000);
-  document.getElementById('sc-m').textContent = fmt((diff % 3600000) / 60000);
-  document.getElementById('sc-s').textContent = fmt((diff % 60000) / 1000);
+const schedDataEl = document.getElementById('schedule-data');
+if (schedDataEl && schedDataEl.dataset.nextMatch) {
+  const schedNextMatch = new Date(schedDataEl.dataset.nextMatch);
+  function tickSchedule() {
+    const diff = schedNextMatch - new Date();
+    if (diff <= 0) return;
+    const fmt = n => String(Math.floor(n)).padStart(2, '0');
+    document.getElementById('sc-h').textContent = fmt(diff / 3600000);
+    document.getElementById('sc-m').textContent = fmt((diff % 3600000) / 60000);
+    document.getElementById('sc-s').textContent = fmt((diff % 60000) / 1000);
+  }
+  tickSchedule();
+  setInterval(tickSchedule, 1000);
 }
-tickSchedule();
-setInterval(tickSchedule, 1000);
-{% endif %}
 </script>
 {% endblock %}
