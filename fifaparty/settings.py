@@ -76,10 +76,13 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'fifaparty.wsgi.application'
 
+# On Vercel the filesystem is read-only; use /tmp for SQLite
+_DB_PATH = Path('/tmp') / 'db.sqlite3' if os.environ.get('VERCEL') else BASE_DIR / 'db.sqlite3'
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': _DB_PATH,
     }
 }
 

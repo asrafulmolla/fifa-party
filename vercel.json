@@ -2,11 +2,10 @@
   "version": 2,
   "builds": [
     {
-      "src": "fifaparty/wsgi.py",
+      "src": "api/index.py",
       "use": "@vercel/python",
       "config": {
-        "maxLambdaSize": "15mb",
-        "runtime": "python3.12"
+        "maxLambdaSize": "15mb"
       }
     },
     {
@@ -21,7 +20,7 @@
     },
     {
       "src": "/(.*)",
-      "dest": "fifaparty/wsgi.py"
+      "dest": "api/index.py"
     }
   ]
 }
