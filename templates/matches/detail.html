@@ -1,0 +1,199 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="page-wrapper">
+<div class="container" style="max-width:860px;">
+
+  <!-- Match Hero -->
+  <div style="padding:40px 0 32px;text-align:center;">
+    <span class="badge badge-{% if match.status == 'LIVE' %}live{% elif match.status == 'COMPLETED' %}community{% else %}community{% endif %} mb-4" style="margin-bottom:16px;display:inline-flex;">
+      {{ match.get_status_display }}
+    </span>
+
+    <div style="display:flex;align-items:center;justify-content:center;gap:32px;flex-wrap:wrap;margin-bottom:16px;">
+      <!-- Team 1 -->
+      <div style="text-align:center;min-width:120px;">
+        <img src="https://flagcdn.com/w80/{{ match.get_team1_flag }}.png" alt="{{ match.team1_name }}" width="80" height="57" style="border-radius:8px;display:block;margin:0 auto 10px;">
+        <h2 style="font-size:1.3rem;font-weight:800;letter-spacing:0.04em;">{{ match.team1_name }}</h2>
+      </div>
+
+      <!-- Score -->
+      <div style="text-align:center;min-width:120px;">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:3rem;font-weight:900;color:var(--text-primary);line-height:1;">
+          {% if match.status == 'COMPLETED' or match.status == 'LIVE' %}
+            {{ match.team1_score|default:0 }}&nbsp;–&nbsp;{{ match.team2_score|default:0 }}
+          {% else %}
+            VS
+          {% endif %}
+        </div>
+        <div style="font-size:0.8rem;color:var(--text-secondary);margin-top:6px;">
+          {{ match.date_bst|date:"D, M j, Y · g:i A" }} BST<br>
+          <span style="color:var(--text-muted);">{{ match.stadium }}{% if match.city %}, {{ match.city }}{% endif %}</span>
+        </div>
+      </div>
+
+      <!-- Team 2 -->
+      <div style="text-align:center;min-width:120px;">
+        <img src="https://flagcdn.com/w80/{{ match.get_team2_flag }}.png" alt="{{ match.team2_name }}" width="80" height="57" style="border-radius:8px;display:block;margin:0 auto 10px;">
+        <h2 style="font-size:1.3rem;font-weight:800;letter-spacing:0.04em;">{{ match.team2_name }}</h2>
+      </div>
+    </div>
+
+    <span class="badge badge-gold">{{ match.get_stage_display }}{% if match.group %} — Group {{ match.group }}{% endif %}</span>
+  </div>
+
+  <!-- Predict Winner -->
+  {% if match.status == 'UPCOMING' and user.is_authenticated %}
+  <div class="card mb-6">
+    <div class="card-header">
+      <h3 style="font-size:1rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="18" height="18" style="vertical-align:-3px;margin-right:6px;color:var(--gold);"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/></svg>
+        Predict the Winner
+      </h3>
+    </div>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;">
+      <button class="btn btn-secondary" id="predict-team1" onclick="submitPrediction('{{ match.team1_code }}', this)">
+        <img src="https://flagcdn.com/w20/{{ match.get_team1_flag }}.png" alt="" width="20" height="14" style="border-radius:2px;">
+        {{ match.team1_name }}
+      </button>
+      <button class="btn btn-secondary" id="predict-draw" onclick="submitPrediction('DRAW', this)" style="background:var(--bg-surface-2);">
+        Draw
+      </button>
+      <button class="btn btn-secondary" id="predict-team2" onclick="submitPrediction('{{ match.team2_code }}', this)">
+        <img src="https://flagcdn.com/w20/{{ match.get_team2_flag }}.png" alt="" width="20" height="14" style="border-radius:2px;">
+        {{ match.team2_name }}
+      </button>
+    </div>
+    <div id="predict-msg" style="margin-top:10px;font-size:0.85rem;color:var(--green);display:none;">
+      ✓ Prediction saved! +bonus points if correct.
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Mood Poll (completed matches) -->
+  {% if match.status == 'COMPLETED' %}
+  <div class="card mb-6" id="poll-section">
+    <div class="card-header">
+      <h3 style="font-size:1rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;">Match Mood Poll</h3>
+    </div>
+    {% if user.is_authenticated %}
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;" id="poll-buttons">
+      <button class="btn btn-green btn-sm" onclick="submitMood('AMAZING')">Amazing 🔥</button>
+      <button class="btn btn-gold btn-sm" onclick="submitMood('DECENT')">Decent 👍</button>
+      <button class="btn btn-outline btn-sm" onclick="submitMood('DISAPPOINTING')">Disappointing 😞</button>
+    </div>
+    {% endif %}
+    <div id="poll-results-container"></div>
+  </div>
+  {% endif %}
+
+  <!-- Watch Venues for this Match -->
+  <div>
+    <h2 style="font-size:1.3rem;font-weight:800;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:16px;">
+      Watch Venues Screening This Match
+    </h2>
+    {% if venues %}
+      <div class="grid-2" style="margin-bottom:32px;">
+        {% for venue in venues %}
+        <a href="/venues/{{ venue.id }}/" class="venue-card" style="text-decoration:none;" id="venue-card-{{ venue.id }}">
+          {% if venue.photo %}
+            <img src="{{ venue.photo.url }}" alt="{{ venue.name }}" class="venue-card-img">
+          {% else %}
+            <div class="venue-card-img-placeholder">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="36" height="36" style="opacity:0.2;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 10l4.553-2.069A1 1 0 0121 8.82V15.18a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+            </div>
+          {% endif %}
+          <div class="venue-card-body">
+            <div class="venue-card-title">{{ venue.name }}</div>
+            <div class="venue-card-area">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="12" height="12"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+              {{ venue.area }}
+            </div>
+            <div class="venue-card-meta">
+              {% if venue.verified %}<span class="badge badge-verified">Verified</span>{% else %}<span class="badge badge-community">Community</span>{% endif %}
+              <span class="badge {% if venue.entry_type == 'FREE' %}badge-free{% else %}badge-paid{% endif %}">{{ venue.get_entry_type_display }}</span>
+            </div>
+          </div>
+        </a>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div style="text-align:center;padding:40px;background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius-lg);">
+        <p style="color:var(--text-muted);">No watch venues have registered for this match yet.</p>
+        <a href="/venues/add/" class="btn btn-primary btn-sm mt-4" style="margin-top:16px;">Add a Venue</a>
+      </div>
+    {% endif %}
+  </div>
+
+  <div style="padding-bottom:60px;"></div>
+</div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const MATCH_ID = {{ match.id }};
+const CSRF = document.cookie.match(/csrftoken=([^;]+)/)?.[1] || '';
+
+function submitPrediction(winner, btn) {
+  fetch(`/predictions/predict/${MATCH_ID}/`, {
+    method: 'POST',
+    headers: {'Content-Type': 'application/x-www-form-urlencoded', 'X-CSRFToken': CSRF},
+    body: `predicted_winner=${winner}`,
+  }).then(r => r.json()).then(d => {
+    if (d.status === 'ok') {
+      document.querySelectorAll('[id^="predict-"]').forEach(b => b.classList.remove('btn-gold'));
+      btn.classList.add('btn-gold');
+      document.getElementById('predict-msg').style.display = 'block';
+    }
+  });
+}
+
+function submitMood(mood) {
+  fetch(`/predictions/poll/${MATCH_ID}/`, {
+    method: 'POST',
+    headers: {'Content-Type': 'application/x-www-form-urlencoded', 'X-CSRFToken': CSRF},
+    body: `mood=${mood}`,
+  }).then(r => r.json()).then(d => {
+    if (d.status === 'ok') {
+      document.getElementById('poll-buttons').style.display = 'none';
+      renderPollResults(d.results, d.total);
+    }
+  });
+}
+
+function renderPollResults(results, total) {
+  const container = document.getElementById('poll-results-container');
+  const moods = {
+    'AMAZING': { label: 'Amazing', class: 'amazing' },
+    'DECENT': { label: 'Decent', class: 'decent' },
+    'DISAPPOINTING': { label: 'Disappointing', class: 'disappointing' },
+  };
+  let html = `<div class="poll-container"><div style="font-size:0.78rem;color:var(--text-muted);margin-bottom:12px;">${total} total votes</div>`;
+  for (const [key, cfg] of Object.entries(moods)) {
+    const pct = results[key] || 0;
+    html += `
+      <div class="poll-bar">
+        <div class="poll-bar-label"><span>${cfg.label}</span><span>${pct}%</span></div>
+        <div class="poll-bar-track"><div class="poll-bar-fill ${cfg.class}" style="width:0%" data-target="${pct}"></div></div>
+      </div>`;
+  }
+  html += '</div>';
+  container.innerHTML = html;
+  // Animate bars
+  requestAnimationFrame(() => {
+    container.querySelectorAll('.poll-bar-fill').forEach(el => {
+      el.style.width = el.dataset.target + '%';
+    });
+  });
+}
+
+// Load poll results on page load for completed matches
+{% if match.status == 'COMPLETED' %}
+fetch(`/predictions/poll/${MATCH_ID}/results/`)
+  .then(r => r.json())
+  .then(d => { if (d.total > 0) renderPollResults(d.results, d.total); });
+{% endif %}
+</script>
+{% endblock %}

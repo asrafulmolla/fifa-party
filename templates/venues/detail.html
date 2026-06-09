@@ -1,0 +1,146 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="page-wrapper">
+<div class="container" style="max-width:900px;">
+
+  <!-- Venue Hero -->
+  <div style="padding:40px 0 24px;">
+    {% if venue.photo %}
+    <img src="{{ venue.photo.url }}" alt="{{ venue.name }}" style="width:100%;max-height:340px;object-fit:cover;border-radius:var(--radius-xl);margin-bottom:24px;">
+    {% endif %}
+
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:16px;">
+      <div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;">
+          {% if venue.verified %}
+            <span class="badge badge-verified">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="10" height="10"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+              Verified by Community
+            </span>
+          {% else %}
+            <span class="badge badge-community">Community Added</span>
+          {% endif %}
+          <span class="badge {% if venue.entry_type == 'FREE' %}badge-free{% else %}badge-paid{% endif %}">{{ venue.get_entry_type_display }}</span>
+          <span class="badge badge-gold">{{ venue.get_screen_size_display }}</span>
+          <span class="badge badge-community">{{ venue.get_crowd_capacity_display }}</span>
+        </div>
+        <h1>{{ venue.name }}</h1>
+        <p style="color:var(--text-secondary);margin-top:8px;display:flex;align-items:center;gap:6px;">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="15" height="15"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          {{ venue.address }}, {{ venue.area }}
+        </p>
+      </div>
+      <div style="text-align:right;">
+        <div style="font-size:0.75rem;color:var(--text-muted);margin-bottom:4px;">Community Rating</div>
+        <div style="display:flex;align-items:center;gap:4px;justify-content:flex-end;">
+          <span style="font-family:'Barlow Condensed',sans-serif;font-size:1.8rem;font-weight:800;color:var(--gold);">{{ venue.community_rating|floatformat:1 }}</span>
+          <div style="color:var(--gold);">
+            {% for i in "12345" %}★{% endfor %}
+          </div>
+        </div>
+        <div style="font-size:0.75rem;color:var(--text-muted);">{{ venue.rating_count }} ratings</div>
+      </div>
+    </div>
+
+    <!-- Stats Row -->
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px;">
+      <div style="background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius-md);padding:16px;text-align:center;">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:1.8rem;font-weight:800;color:var(--text-primary);" id="venue-checkin-count">{{ venue.checkin_count }}</div>
+        <div style="font-size:0.72rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.08em;">Going Tonight</div>
+      </div>
+      <div style="background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius-md);padding:16px;text-align:center;">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:1.8rem;font-weight:800;color:var(--text-primary);">{{ venue_matches|length }}</div>
+        <div style="font-size:0.72rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.08em;">Matches</div>
+      </div>
+      <div style="background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius-md);padding:16px;text-align:center;">
+        <a href="/profile/{{ venue.submitted_by.username }}/" style="text-decoration:none;">
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:1rem;font-weight:700;color:var(--navy-light);">{{ venue.submitted_by.username }}</div>
+          <div style="font-size:0.72rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.08em;">Submitted by</div>
+        </a>
+      </div>
+    </div>
+
+    {% if venue.contact_info %}
+    <div style="background:var(--bg-surface-2);border:1px solid var(--border);border-radius:var(--radius-md);padding:12px 16px;margin-bottom:20px;display:flex;align-items:center;gap:8px;font-size:0.88rem;">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="16" height="16" style="color:var(--gold);flex-shrink:0;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.948V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+      <span style="color:var(--text-secondary);">Contact:</span>
+      <span>{{ venue.contact_info }}</span>
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- Matches + Check-In -->
+  <div class="card mb-6">
+    <div class="card-header">
+      <h2 style="font-size:1rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;">Screening These Matches</h2>
+    </div>
+    {% for vm in venue_matches %}
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);" id="vm-row-{{ vm.id }}">
+      <div style="display:flex;align-items:center;gap:12px;flex:1;">
+        <img src="https://flagcdn.com/w20/{{ vm.match.get_team1_flag }}.png" alt="" width="20" height="14" style="border-radius:2px;">
+        <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.9rem;">{{ vm.match.team1_name }}</span>
+        <span style="color:var(--text-muted);font-size:0.8rem;">vs</span>
+        <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.9rem;">{{ vm.match.team2_name }}</span>
+        <img src="https://flagcdn.com/w20/{{ vm.match.get_team2_flag }}.png" alt="" width="20" height="14" style="border-radius:2px;">
+        <span style="font-size:0.75rem;color:var(--text-secondary);">{{ vm.match.date_bst|date:"M j, g:i A" }}</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span style="font-size:0.8rem;color:var(--text-secondary);" id="ci-count-{{ vm.id }}">
+          {{ vm.checkin_set.count }} going
+        </span>
+        {% if user.is_authenticated %}
+        <button
+          class="btn btn-sm {% if vm.match.id in user_checkins %}btn-green{% else %}btn-outline{% endif %}"
+          id="ci-btn-{{ vm.id }}"
+          onclick="toggleCheckin({{ vm.id }}, this)"
+          title="{% if vm.match.id in user_checkins %}Undo check-in{% else %}I'm going{% endif %}"
+        >
+          {% if vm.match.id in user_checkins %}
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="14" height="14"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            Going!
+          {% else %}
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="14" height="14"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+            I'm Going
+          {% endif %}
+        </button>
+        {% else %}
+        <a href="/login/?next={{ request.path }}" class="btn btn-sm btn-outline">Sign in to RSVP</a>
+        {% endif %}
+      </div>
+    </div>
+    {% empty %}
+    <p style="color:var(--text-muted);font-size:0.88rem;padding:8px 0;">No matches linked to this venue yet.</p>
+    {% endfor %}
+  </div>
+
+  <div style="padding-bottom:60px;"></div>
+</div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const CSRF = document.cookie.match(/csrftoken=([^;]+)/)?.[1] || '';
+
+function toggleCheckin(vmId, btn) {
+  fetch('/venues/checkin/', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/x-www-form-urlencoded', 'X-CSRFToken': CSRF},
+    body: `venue_match_id=${vmId}`,
+  }).then(r => r.json()).then(d => {
+    const countEl = document.getElementById(`ci-count-${vmId}`);
+    countEl.textContent = `${d.checkin_count} going`;
+
+    if (d.action === 'added') {
+      btn.className = 'btn btn-sm btn-green';
+      btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="14" height="14"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Going!`;
+    } else {
+      btn.className = 'btn btn-sm btn-outline';
+      btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="14" height="14"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg> I'm Going`;
+    }
+  });
+}
+</script>
+{% endblock %}

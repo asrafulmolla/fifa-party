@@ -1,0 +1,182 @@
+# Project Plan: FIFA Watch Party Finder — Bangladesh Edition
+
+---
+
+## Project Overview
+
+A community-driven Django web application where football fans in Bangladesh can discover and register local FIFA World Cup watch party locations. Users can find nearby projection screenings on a map, browse match schedules, and contribute new watch spots to the community. The site will be themed around the current World Cup's official branding — colors, fonts, and visual identity.
+
+---
+
+## Project Name Ideas
+
+- Fifa Party
+---
+
+## Core Philosophy
+
+This is a **community map** — think of it like a hybrid between Google Maps and a football fan hub. Anyone can consume information. Logged-in users can contribute. The site lives and breathes through its community. No paid APIs, no live streaming, no third-party subscriptions needed.
+
+---
+
+## Feature List
+
+### 1. Watch Party Map (The Hero Feature)
+- Full-screen interactive Google Maps embed on the home/dashboard page
+- Each watch party location shown as a custom football-themed map pin
+- Clicking a pin opens a popup card showing:
+  - Venue name and area (e.g., "Dhanmondi Rooftop Club")
+  - Who submitted it and when
+  - Which matches they plan to screen
+  - Crowd capacity estimate (Small / Medium / Large)
+  - Entry type (Free / Paid / Donation)
+  - A simple community vibe rating (star or emoji-based, voted by visitors)
+- Map auto-centers on the user's location (with browser geolocation permission)
+- If permission denied, defaults to Dhaka center
+- Filter chips on the map: Today's Matches / All Venues / Free Entry Only / Verified
+
+### 2. User Authentication
+- Register / Login / Logout (standard Django auth)
+- Profile page showing:
+  - Venues the user has submitted
+  - Matches they've marked as "I'm attending"
+  - Their contribution score (gamified — more on this below)
+- Social-style avatar with flag-themed border (color changes based on which country they're supporting)
+
+### 3. Add a Watch Venue (Community Contribution)
+- Logged-in users can submit a new watch party location via a form:
+  - Venue name
+  - Address / area (with Google Maps pin picker)
+  - Available matches (multi-select from schedule)
+  - Projector screen size estimate (small TV / big screen / full projector)
+  - Entry fee details
+  - Contact info (optional)
+  - Photo upload (optional)
+- Newly submitted venues appear immediately on the map with a "Community Added" badge
+- After a threshold of check-ins or upvotes, the badge upgrades to "Verified by Community"
+
+### 4. Match Schedule — Group Stage Table View
+- All 48 group stage matches displayed in a clean table format
+- Organized by Group A through Group H
+- Each row shows: Team 1 vs Team 2, Date, Time (Bangladesh Standard Time — BST), Venue (actual FIFA stadium), Status (Upcoming / Live / Completed), Score
+- Color coded by status: Upcoming (cool blue), Live (pulsing red/green), Completed (muted gray)
+- Country flags next to team names
+- Clicking a match row shows which local watch venues are screening that specific match
+- Live score updates via a free public football API (e.g., football-data.org free tier)
+
+### 5. Match Schedule — Knockout Tree View (Post Group Stage)
+- Once groups are complete, the schedule section transforms into a visual bracket tree
+- Rendered left-to-right: Round of 16 → Quarterfinals → Semifinals → Final
+- Each match node shows team names, flags, and score
+- Winning teams visually "advance" with a highlighted path
+- Teams not yet determined show "TBD" with a question mark flag
+- The bracket animates on load — nodes slide in from left to right
+- Color theme follows the World Cup palette (deep navy, gold, red, green — specific to this year's branding)
+
+### 6. Match Countdown Widget
+- Persistent banner or sidebar card showing the next upcoming match
+- Large countdown timer (hours : minutes : seconds)
+- Below the timer: "X watch venues in your area are screening this match"
+- Tap/click to jump to the map filtered for that match
+
+### 7. "I'm Going" / Check-In System
+- On any venue card, logged-in users can click "I'm Going" for a specific match
+- This increments a live attendee count visible on the map pin
+- Helps other users gauge how crowded a spot will be
+- Users can undo their check-in anytime
+- The venue's pin on the map grows slightly in size based on check-in count (visual crowd indicator)
+
+### 8. Community Contribution Score (Gamification)
+- Every user has a "Fan Score" shown on their profile
+- Points awarded for:
+  - Submitting a venue: +10 points
+  - Getting a check-in on your venue: +2 points per person
+  - Having your venue verified: +25 points
+  - Checking in to a venue: +1 point
+- Leaderboard page showing top contributors (optional MVP feature)
+- Badges: First Submission, 5 Check-ins, World Cup Superfan, etc.
+
+### 9. Match Notifications (Simple, No Paid Service)
+- Users can "Follow" a match or a venue
+- Django-based in-app notification system (not push, not SMS — just a bell icon on the navbar)
+- Notifications for:
+  - Match starting soon (1 hour before)
+  - A new venue in your area added a match you follow
+  - Check-in milestone on your submitted venue ("10 people are going to your venue tonight!")
+
+### 10. World Cup News Feed (Free API)
+- A lightweight news tab pulling headlines from a free football news RSS feed or public API
+- Shows top 5–10 recent articles with thumbnail, title, source, and time
+- No scraping, no paid keys — just RSS parsing or a free sports news API
+- Cards styled with team/match color accents
+
+### 11. Fun Fan Features
+- **Predict the Winner**: Before each match, logged-in users pick a winner. After the match, correct predictors get bonus Fan Score points. A leaderboard tracks prediction accuracy across the tournament.
+- **Country Support Flag**: During signup or from profile settings, a user picks their supported team. Their avatar gets a colored border matching that country's flag. The map shows a small stat: "Most supported team in Dhaka: Argentina"
+- **"Who's Watching Where" Heatmap Toggle**: An optional heatmap overlay on the map showing density of registered watch parties, giving a visual pulse of where the city is alive with football energy.
+- **Match Mood Poll**: After each match, a simple 3-option poll appears (Amazing / Decent / Disappointing). Results shown as an animated bar chart. Purely fun, no backend complexity.
+
+---
+
+## Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Backend | Django (Python) |
+| Frontend | Django Templates + Vanilla JS + CSS |
+| Styling | Custom CSS with World Cup theme (no heavy framework needed) |
+| Maps | Google Maps JavaScript API (free tier is sufficient) |
+| Live Scores | football-data.org (free tier) |
+| Auth | Django built-in auth |
+| Deployment | Railway / Render / PythonAnywhere (all free tiers available) |
+| Static Files | WhiteNoise or Django staticfiles |
+
+---
+
+## Database Models (Conceptual, No Code)
+
+**User Profile** — extends Django's default user. Stores supported team, fan score, avatar.
+
+**WatchVenue** — stores venue name, coordinates, submitted by, entry type, screen size, verified status, created date.
+
+**VenueMatch** — links a WatchVenue to specific match IDs (which matches that venue is screening).
+
+**CheckIn** — links a User to a VenueMatch. Records timestamp.
+
+**Match** — stores FIFA match data: teams, group, date/time (BST), stage, score, status.
+
+**Notification** — stores in-app notifications per user with read/unread status.
+
+**Prediction** — stores user's match winner prediction and whether it was correct.
+
+**Poll Response** — stores user mood vote per match.
+
+---
+
+## Pages / URL Structure
+
+| Page | URL | Description |
+|---|---|---|
+| Home / Map | / | Full-screen map with watch parties |
+| Match Schedule | /schedule/ | Group tables and knockout bracket |
+| Add Venue | /venues/add/ | Form to submit a watch party |
+| Venue Detail | /venues/<id>/ | Full page for a specific venue |
+| Profile | /profile/<username>/ | User contributions and stats |
+| Leaderboard | /leaderboard/ | Top contributors and predictors |
+| News | /news/ | World Cup headlines feed |
+| Login / Register | /login/ /register/ | Standard auth pages |
+| Admin | /admin/ | Django admin for moderation |
+
+---
+
+## Visual Design Direction
+
+- **Color Palette**: Based on the FIFA World Cup 2026 official branding — navy blue, silver/white, bold red. Accent colors: gold for highlights, green for live/active states.
+- **Typography**: Bold, wide sans-serif for headings (feels like jersey numbers and stadium signage). Clean readable font for body text.
+- **Map Style**: Custom dark-styled Google Map (free — just JSON styling) so the colored pins pop against a dark background.
+- **Animations**: Subtle entrance animations on page load (cards slide up, bracket nodes draw in). Countdown timer pulses on the final minute.
+- **Mobile First**: Most users will access from their phones. The map, schedule, and add-venue form should all work cleanly on mobile.
+- **Flag Accents**: Country flags used heavily throughout — in tables, venue cards, user profiles, and the bracket. They make the UI feel instantly football-themed without needing expensive graphics.
+
+---
+

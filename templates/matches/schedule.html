@@ -1,0 +1,192 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Match Schedule | FIFA Party Bangladesh{% endblock %}
+
+{% block content %}
+<div class="page-wrapper">
+<div class="container">
+
+  <!-- Header -->
+  <div class="section-header" style="padding: 40px 0 24px;">
+    <div class="hero-badge">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="12" height="12"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+      FIFA World Cup 2026
+    </div>
+    <h1>Match Schedule</h1>
+    <p class="section-subtitle">All times in Bangladesh Standard Time (BST, UTC+6)</p>
+  </div>
+
+  <!-- Countdown Banner (if next match exists) -->
+  {% if next_match %}
+  <div style="background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px 20px;margin-bottom:28px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+    <div style="flex:1;min-width:200px;">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:0.72rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:4px;">
+        ⚡ Next Match
+      </div>
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:1.1rem;font-weight:700;">
+        <img src="https://flagcdn.com/w20/{{ next_match.get_team1_flag }}.png" alt="{{ next_match.team1_name }}" width="20" height="14" style="border-radius:2px;margin-right:6px;">
+        {{ next_match.team1_name }}
+        <span style="color:var(--text-muted);margin:0 8px;">vs</span>
+        {{ next_match.team2_name }}
+        <img src="https://flagcdn.com/w20/{{ next_match.get_team2_flag }}.png" alt="{{ next_match.team2_name }}" width="20" height="14" style="border-radius:2px;margin-left:6px;">
+      </div>
+      <div style="font-size:0.8rem;color:var(--text-secondary);margin-top:4px;">
+        {{ next_match.stadium }} · {{ next_match.date_bst|date:"D, M j · g:i A" }}
+      </div>
+    </div>
+    <div id="schedule-countdown" style="display:flex;align-items:center;gap:8px;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:1.6rem;color:var(--text-primary);">
+      <span id="sc-h">--</span><span style="color:var(--text-muted)">:</span><span id="sc-m">--</span><span style="color:var(--text-muted)">:</span><span id="sc-s">--</span>
+    </div>
+    <a href="/" class="btn btn-primary btn-sm">Find Venues on Map</a>
+  </div>
+  {% endif %}
+
+  <!-- Tabs: Group Stage / Knockouts -->
+  <div class="schedule-tabs" id="schedule-tabs">
+    <button class="schedule-tab active" data-tab="groups" id="tab-groups" onclick="switchTab('groups', this)">
+      Group Stage
+    </button>
+    {% if has_knockouts %}
+    <button class="schedule-tab" data-tab="knockouts" id="tab-knockouts" onclick="switchTab('knockouts', this)">
+      Knockout Bracket
+    </button>
+    {% endif %}
+  </div>
+
+  <!-- Group Stage -->
+  <div id="panel-groups" class="tab-panel animate-fade-in">
+    {% if group_matches %}
+      {% for group, matches in group_matches.items %}
+      <div style="margin-bottom:36px;" id="group-{{ group }}">
+        <div class="group-header">
+          <div class="group-letter">{{ group }}</div>
+          <h3 style="font-size:1rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-secondary);">Group {{ group }}</h3>
+        </div>
+        {% for match in matches %}
+        <a href="/schedule/{{ match.id }}/" class="match-row status-{{ match.status|lower }}" style="text-decoration:none;" id="match-{{ match.id }}">
+          <!-- Team 1 -->
+          <div class="team-side">
+            <img src="https://flagcdn.com/w28/{{ match.get_team1_flag }}.png" alt="{{ match.team1_name }}" width="28" height="20" class="team-flag" onerror="this.style.display='none'">
+            <span class="team-name">{{ match.team1_name }}</span>
+          </div>
+          <!-- Score / Time -->
+          <div class="match-score-center">
+            {% if match.status == 'COMPLETED' or match.status == 'LIVE' %}
+              <div class="score-display">{{ match.team1_score|default:"0" }} – {{ match.team2_score|default:"0" }}</div>
+            {% else %}
+              <div class="score-display" style="color:var(--text-muted);">vs</div>
+            {% endif %}
+            {% if match.status == 'LIVE' %}
+              <div><span class="badge badge-live">LIVE</span></div>
+            {% elif match.status == 'UPCOMING' %}
+              <div class="match-meta">{{ match.date_bst|date:"g:i A" }}</div>
+            {% else %}
+              <div class="match-meta">FT</div>
+            {% endif %}
+            <div class="match-meta">{{ match.date_bst|date:"M j" }}</div>
+          </div>
+          <!-- Team 2 -->
+          <div class="team-side right">
+            <span class="team-name">{{ match.team2_name }}</span>
+            <img src="https://flagcdn.com/w28/{{ match.get_team2_flag }}.png" alt="{{ match.team2_name }}" width="28" height="20" class="team-flag" onerror="this.style.display='none'">
+          </div>
+          <!-- Stadium -->
+          <div style="text-align:right;min-width:90px;">
+            <div style="font-size:0.72rem;color:var(--text-muted);line-height:1.4;">
+              {{ match.city|default:"TBD" }}<br>
+              <span class="badge badge-community" style="margin-top:2px;">{{ match.get_stage_display }}</span>
+            </div>
+          </div>
+        </a>
+        {% endfor %}
+      </div>
+      {% endfor %}
+    {% else %}
+      <div style="text-align:center;padding:80px 20px;color:var(--text-muted);">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="48" height="48" style="margin:0 auto 16px;display:block;opacity:0.3;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+        <p style="font-family:'Barlow Condensed',sans-serif;font-size:1.1rem;font-weight:700;">No matches loaded yet</p>
+        <p style="font-size:0.85rem;margin-top:6px;">Match data will appear here once the tournament begins.</p>
+      </div>
+    {% endif %}
+  </div>
+
+  <!-- Knockout Bracket -->
+  <div id="panel-knockouts" class="tab-panel" style="display:none;">
+    {% if knockout_stages %}
+    <div class="bracket-container" id="bracket-container">
+      <div class="bracket-grid">
+        {% for stage_code, stage_matches in knockout_stages %}
+        <div class="bracket-round" id="bracket-round-{{ stage_code }}">
+          <div class="bracket-round-title">
+            {% if stage_code == 'R16' %}Round of 16
+            {% elif stage_code == 'QF' %}Quarterfinals
+            {% elif stage_code == 'SF' %}Semifinals
+            {% elif stage_code == 'THIRD' %}3rd Place
+            {% elif stage_code == 'FINAL' %}Final
+            {% else %}{{ stage_code }}{% endif %}
+          </div>
+          {% for match in stage_matches %}
+          <div class="bracket-match" style="animation-delay: {{ forloop.counter0|add:'0' }}00ms;">
+            <a href="/schedule/{{ match.id }}/" style="display:block;text-decoration:none;">
+              <div class="bracket-team {% if match.status == 'COMPLETED' and match.team1_score > match.team2_score %}winner{% endif %}">
+                <img src="https://flagcdn.com/w20/{{ match.get_team1_flag }}.png" alt="{{ match.team1_name }}" width="20" height="14" style="border-radius:2px;" onerror="this.style.display='none'">
+                <span>{{ match.team1_name }}</span>
+                {% if match.status != 'UPCOMING' %}
+                  <span class="bracket-score">{{ match.team1_score|default:"-" }}</span>
+                {% endif %}
+              </div>
+              <div class="bracket-team {% if match.status == 'COMPLETED' and match.team2_score > match.team1_score %}winner{% endif %}">
+                <img src="https://flagcdn.com/w20/{{ match.get_team2_flag }}.png" alt="{{ match.team2_name }}" width="20" height="14" style="border-radius:2px;" onerror="this.style.display='none'">
+                <span>{{ match.team2_name }}</span>
+                {% if match.status != 'UPCOMING' %}
+                  <span class="bracket-score">{{ match.team2_score|default:"-" }}</span>
+                {% endif %}
+              </div>
+            </a>
+          </div>
+          {% endfor %}
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% else %}
+    <div style="text-align:center;padding:80px 20px;color:var(--text-muted);">
+      <p style="font-family:'Barlow Condensed',sans-serif;font-size:1.2rem;font-weight:700;">Knockout stage not yet available</p>
+      <p style="font-size:0.85rem;margin-top:6px;">The bracket will appear after the group stage concludes.</p>
+    </div>
+    {% endif %}
+  </div>
+
+</div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Tab switching
+function switchTab(tab, btn) {
+  document.querySelectorAll('.schedule-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.tab-panel').forEach(p => {
+    p.style.display = p.id === `panel-${tab}` ? 'block' : 'none';
+    if (p.style.display === 'block') p.classList.add('animate-fade-in');
+  });
+}
+
+// Schedule countdown
+{% if next_match %}
+const schedNextMatch = new Date("{{ next_match.date_bst.isoformat }}");
+function tickSchedule() {
+  const diff = schedNextMatch - new Date();
+  if (diff <= 0) return;
+  const fmt = n => String(Math.floor(n)).padStart(2, '0');
+  document.getElementById('sc-h').textContent = fmt(diff / 3600000);
+  document.getElementById('sc-m').textContent = fmt((diff % 3600000) / 60000);
+  document.getElementById('sc-s').textContent = fmt((diff % 60000) / 1000);
+}
+tickSchedule();
+setInterval(tickSchedule, 1000);
+{% endif %}
+</script>
+{% endblock %}

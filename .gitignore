@@ -1,0 +1,71 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg
+*.egg-info/
+dist/
+build/
+eggs/
+parts/
+var/
+sdist/
+develop-eggs/
+.installed.cfg
+lib64/
+*.so
+
+# Virtual Environments
+env/
+venv/
+ENV/
+.venv/
+
+# Django
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+media/
+
+# Static (collected)
+staticfiles/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Node (Tailwind, etc.)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Thumbs.db
+
+# Migrations (keep them tracked — Django best practice)
+# !*/migrations/*.py
+
+# Design system outputs (agent generated)
+design-system/
+
+# Agent files
+.agent/
+
+# Compiled assets
+*.css.map
+*.js.map

@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="page-wrapper">
+<div class="container">
+
+  <div style="padding:40px 0 24px;display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:16px;">
+    <div>
+      <div class="hero-badge" style="margin-bottom:12px;">All Watch Parties</div>
+      <h1>Watch Venues</h1>
+      <p class="section-subtitle">{{ venues|length }} community-submitted spots across Bangladesh</p>
+    </div>
+    <a href="/venues/add/" class="btn btn-primary" id="add-venue-btn">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="16" height="16"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+      Add Venue — +10 pts
+    </a>
+  </div>
+
+  {% if venues %}
+  <div class="grid-3" style="margin-bottom:60px;">
+    {% for venue in venues %}
+    <a href="/venues/{{ venue.id }}/" class="venue-card" style="text-decoration:none;" id="venue-list-{{ venue.id }}">
+      {% if venue.photo %}
+        <img src="{{ venue.photo.url }}" alt="{{ venue.name }}" class="venue-card-img">
+      {% else %}
+        <div class="venue-card-img-placeholder">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="36" height="36" style="opacity:0.2;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 10l4.553-2.069A1 1 0 0121 8.82V15.18a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+        </div>
+      {% endif %}
+      <div class="venue-card-body">
+        <div class="venue-card-title">{{ venue.name }}</div>
+        <div class="venue-card-area">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="12" height="12"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/></svg>
+          {{ venue.area }}
+        </div>
+        <div class="venue-card-meta">
+          {% if venue.verified %}<span class="badge badge-verified">Verified</span>{% else %}<span class="badge badge-community">Community</span>{% endif %}
+          <span class="badge {% if venue.entry_type == 'FREE' %}badge-free{% else %}badge-paid{% endif %}">{{ venue.get_entry_type_display }}</span>
+          <span class="badge badge-gold">{{ venue.get_screen_size_display }}</span>
+        </div>
+        <div class="venue-card-footer">
+          <div class="checkin-count">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="13" height="13"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+            {{ venue.checkin_count }} going
+          </div>
+          <span style="font-size:0.75rem;color:var(--text-muted);">{{ venue.submitted_by.username }}</span>
+        </div>
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div style="text-align:center;padding:80px 20px;color:var(--text-muted);">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="56" height="56" style="margin:0 auto 20px;display:block;opacity:0.15;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+    <p style="font-family:'Barlow Condensed',sans-serif;font-size:1.3rem;font-weight:700;margin-bottom:8px;">No venues yet</p>
+    <p style="font-size:0.9rem;margin-bottom:24px;">Be the first to add a FIFA watch party location in Bangladesh!</p>
+    <a href="/venues/add/" class="btn btn-primary">Add the First Venue</a>
+  </div>
+  {% endif %}
+
+</div>
+</div>
+{% endblock %}

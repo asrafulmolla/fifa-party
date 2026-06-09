@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="page-wrapper">
+<div class="container" style="max-width:700px;">
+
+  <div style="padding:60px 0 40px;text-align:center;">
+    <div class="hero-badge" style="margin-bottom:16px;">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="12" height="12"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+      Top Contributors
+    </div>
+    <h1>Fan Leaderboard</h1>
+    <p class="section-subtitle">Bangladesh's most active FIFA 2026 watch party contributors</p>
+  </div>
+
+  <!-- Top 3 Podium -->
+  {% if top_fans|length >= 3 %}
+  <div style="display:flex;align-items:flex-end;justify-content:center;gap:12px;margin-bottom:32px;">
+    <!-- 2nd -->
+    <div style="text-align:center;flex:1;max-width:140px;">
+      <div style="background:var(--bg-surface);border:2px solid #C0C0C0;border-radius:var(--radius-lg);padding:16px 12px;margin-bottom:8px;">
+        <div class="profile-avatar-default" style="margin:0 auto 8px;width:52px;height:52px;font-size:1.3rem;">{{ top_fans.1.user.username|slice:":1"|upper }}</div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.9rem;color:#C0C0C0;">{{ top_fans.1.user.username }}</div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:1.2rem;font-weight:800;color:var(--text-primary);margin-top:4px;">{{ top_fans.1.fan_score }}</div>
+        <div style="font-size:0.68rem;color:var(--text-muted);">Points</div>
+      </div>
+      <div style="font-size:1.5rem;font-weight:800;color:#C0C0C0;font-family:'Barlow Condensed',sans-serif;">2nd</div>
+    </div>
+    <!-- 1st -->
+    <div style="text-align:center;flex:1;max-width:160px;">
+      <div style="background:rgba(251,191,36,0.08);border:2px solid var(--gold);border-radius:var(--radius-lg);padding:20px 12px;margin-bottom:8px;position:relative;">
+        <div style="position:absolute;top:-14px;left:50%;transform:translateX(-50%);font-size:1.4rem;">👑</div>
+        <div class="profile-avatar-default" style="margin:0 auto 8px;width:64px;height:64px;font-size:1.6rem;border-color:var(--gold);">{{ top_fans.0.user.username|slice:":1"|upper }}</div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:1rem;color:var(--gold);">{{ top_fans.0.user.username }}</div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:1.5rem;font-weight:900;color:var(--gold);margin-top:4px;">{{ top_fans.0.fan_score }}</div>
+        <div style="font-size:0.68rem;color:var(--text-muted);">Points</div>
+      </div>
+      <div style="font-size:1.8rem;font-weight:900;color:var(--gold);font-family:'Barlow Condensed',sans-serif;">1st</div>
+    </div>
+    <!-- 3rd -->
+    <div style="text-align:center;flex:1;max-width:140px;">
+      <div style="background:var(--bg-surface);border:2px solid #CD7F32;border-radius:var(--radius-lg);padding:16px 12px;margin-bottom:8px;">
+        <div class="profile-avatar-default" style="margin:0 auto 8px;width:52px;height:52px;font-size:1.3rem;">{{ top_fans.2.user.username|slice:":1"|upper }}</div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.9rem;color:#CD7F32;">{{ top_fans.2.user.username }}</div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:1.2rem;font-weight:800;color:var(--text-primary);margin-top:4px;">{{ top_fans.2.fan_score }}</div>
+        <div style="font-size:0.68rem;color:var(--text-muted);">Points</div>
+      </div>
+      <div style="font-size:1.5rem;font-weight:800;color:#CD7F32;font-family:'Barlow Condensed',sans-serif;">3rd</div>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Full Leaderboard Table -->
+  <div class="card">
+    <div class="card-header">
+      <h2 style="font-size:0.9rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-secondary);">All Rankings</h2>
+    </div>
+    {% for profile in top_fans %}
+    <a href="/profile/{{ profile.user.username }}/" class="leaderboard-row {% if forloop.counter == 1 %}top-1{% elif forloop.counter == 2 %}top-2{% elif forloop.counter == 3 %}top-3{% endif %}" style="text-decoration:none;" id="lb-row-{{ forloop.counter }}">
+      <div class="rank-number {% if forloop.counter == 1 %}top-1{% elif forloop.counter == 2 %}top-2{% elif forloop.counter == 3 %}top-3{% endif %}">
+        {% if forloop.counter == 1 %}🥇
+        {% elif forloop.counter == 2 %}🥈
+        {% elif forloop.counter == 3 %}🥉
+        {% else %}{{ forloop.counter }}{% endif %}
+      </div>
+      <div class="profile-avatar-default" style="width:38px;height:38px;font-size:1rem;flex-shrink:0;">{{ profile.user.username|slice:":1"|upper }}</div>
+      <div style="flex:1;">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.95rem;">{{ profile.user.username }}</div>
+        <div style="font-size:0.75rem;color:var(--text-muted);">
+          {% if profile.supported_team %}
+          <img src="https://flagcdn.com/w16/{{ profile.get_flag_code }}.png" alt="" width="16" height="11" style="border-radius:2px;vertical-align:-1px;margin-right:4px;">
+          {{ profile.get_supported_team_display }}
+          {% endif %}
+        </div>
+      </div>
+      <div style="text-align:right;">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:1.2rem;font-weight:800;color:var(--gold);">{{ profile.fan_score }}</div>
+        <div style="font-size:0.68rem;color:var(--text-muted);">pts</div>
+      </div>
+    </a>
+    {% empty %}
+    <div style="text-align:center;padding:40px;color:var(--text-muted);">
+      <p>No fans ranked yet. Be the first!</p>
+      <a href="/register/" class="btn btn-primary btn-sm mt-4" style="margin-top:16px;">Join FIFA Party</a>
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- Fan Score Guide -->
+  <div class="card mt-6" style="margin-top:24px;margin-bottom:60px;">
+    <div class="card-header">
+      <h3 style="font-size:0.9rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--gold);">How to Earn Fan Points</h3>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;">
+
+      <div style="background:var(--bg-surface-2);border-radius:var(--radius-md);padding:12px 16px;display:flex;justify-content:space-between;align-items:center;">
+        <span style="font-size:0.85rem;color:var(--text-secondary);">Submit a venue</span>
+        <span style="font-family:'Barlow Condensed',sans-serif;font-weight:800;color:var(--gold);">+10</span>
+      </div>
+      <div style="background:var(--bg-surface-2);border-radius:var(--radius-md);padding:12px 16px;display:flex;justify-content:space-between;align-items:center;">
+        <span style="font-size:0.85rem;color:var(--text-secondary);">Venue gets check-in</span>
+        <span style="font-family:'Barlow Condensed',sans-serif;font-weight:800;color:var(--gold);">+2</span>
+      </div>
+      <div style="background:var(--bg-surface-2);border-radius:var(--radius-md);padding:12px 16px;display:flex;justify-content:space-between;align-items:center;">
+        <span style="font-size:0.85rem;color:var(--text-secondary);">Venue gets verified</span>
+        <span style="font-family:'Barlow Condensed',sans-serif;font-weight:800;color:var(--green);">+25</span>
+      </div>
+      <div style="background:var(--bg-surface-2);border-radius:var(--radius-md);padding:12px 16px;display:flex;justify-content:space-between;align-items:center;">
+        <span style="font-size:0.85rem;color:var(--text-secondary);">Check in to a venue</span>
+        <span style="font-family:'Barlow Condensed',sans-serif;font-weight:800;color:var(--gold);">+1</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div>
+{% endblock %}

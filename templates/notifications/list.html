@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="page-wrapper">
+<div class="container" style="max-width:720px;">
+
+  <div style="padding:40px 0 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;">
+    <div>
+      <h1>Notifications</h1>
+      <p class="section-subtitle">Stay updated with your watch parties and matches</p>
+    </div>
+    {% if notifications %}
+    <a href="/notifications/read-all/" class="btn btn-ghost btn-sm">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="15" height="15"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+      Mark All Read
+    </a>
+    {% endif %}
+  </div>
+
+  {% if notifications %}
+  <div style="margin-bottom:60px;">
+    {% for notif in notifications %}
+    <a href="{{ notif.link|default:'#' }}" class="notif-item {% if not notif.is_read %}unread{% endif %}" style="text-decoration:none;display:flex;" id="notif-{{ notif.id }}">
+      <div class="notif-icon">
+        {% if notif.notification_type == 'MATCH_SOON' %}
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="16" height="16"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        {% elif notif.notification_type == 'VENUE_VERIFIED' %}
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="16" height="16"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/></svg>
+        {% elif notif.notification_type == 'CHECKIN_MILESTONE' %}
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="16" height="16"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+        {% else %}
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="16" height="16"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+        {% endif %}
+      </div>
+      <div style="flex:1;">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.9rem;color:var(--text-primary);margin-bottom:3px;">{{ notif.title }}</div>
+        <div style="font-size:0.82rem;color:var(--text-secondary);">{{ notif.message }}</div>
+        <div style="font-size:0.72rem;color:var(--text-muted);margin-top:5px;">{{ notif.created_at|timesince }} ago</div>
+      </div>
+      {% if not notif.is_read %}
+      <div style="width:8px;height:8px;background:var(--red);border-radius:50%;flex-shrink:0;margin-top:4px;"></div>
+      {% endif %}
+    </a>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div style="text-align:center;padding:80px 20px;color:var(--text-muted);">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="48" height="48" style="margin:0 auto 16px;display:block;opacity:0.2;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+    <p style="font-family:'Barlow Condensed',sans-serif;font-size:1.1rem;font-weight:700;">All caught up!</p>
+    <p style="font-size:0.85rem;margin-top:6px;">No notifications yet. Submit a venue to get started.</p>
+    <a href="/venues/add/" class="btn btn-primary btn-sm" style="margin-top:16px;">Add a Venue</a>
+  </div>
+  {% endif %}
+
+</div>
+</div>
+{% endblock %}

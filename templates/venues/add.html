@@ -1,0 +1,220 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
+<style>
+.leaflet-container { background: #0A0E1A; }
+#pin-map .leaflet-control-zoom a {
+  background: #111827;
+  color: #F8FAFC;
+  border-color: rgba(255,255,255,0.1);
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-wrapper">
+<div class="container" style="max-width:760px;">
+
+  <div style="padding:40px 0 32px;">
+    <div class="hero-badge" style="margin-bottom:16px;">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="12" height="12"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+      Submit Watch Party
+    </div>
+    <h1>Add a Watch Venue</h1>
+    <p class="section-subtitle">Share a local watch party spot with the community. Earn <strong class="text-gold">+10 Fan Points</strong>!</p>
+  </div>
+
+  <form method="post" enctype="multipart/form-data" id="add-venue-form">
+    {% csrf_token %}
+
+    <div class="card mb-6">
+      <div class="card-header">
+        <h3 style="font-size:0.9rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--gold);">Venue Info</h3>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="name">Venue Name *</label>
+        <input type="text" id="name" name="name" class="form-control" placeholder="e.g. Dhanmondi Rooftop Club" required>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="area">Area / Neighborhood *</label>
+        <input type="text" id="area" name="area" class="form-control" placeholder="e.g. Dhanmondi, Gulshan, Mirpur..." required>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="address">Full Address *</label>
+        <textarea id="address" name="address" class="form-control" rows="2" placeholder="Street address, building name..." required></textarea>
+      </div>
+
+      <div class="grid-2">
+        <div class="form-group">
+          <label class="form-label" for="entry_type">Entry Type</label>
+          <select id="entry_type" name="entry_type" class="form-control">
+            <option value="FREE">Free Entry</option>
+            <option value="PAID">Paid Entry</option>
+            <option value="DONATION">Donation</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="screen_size">Screen Size</label>
+          <select id="screen_size" name="screen_size" class="form-control">
+            <option value="TV">Small TV</option>
+            <option value="BIG" selected>Big Screen</option>
+            <option value="PROJECTOR">Full Projector</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="form-group">
+          <label class="form-label" for="crowd_capacity">Crowd Capacity</label>
+          <select id="crowd_capacity" name="crowd_capacity" class="form-control">
+            <option value="SMALL">Small (&lt; 20)</option>
+            <option value="MEDIUM" selected>Medium (20–100)</option>
+            <option value="LARGE">Large (100+)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="entry_fee_details">Entry Fee Details</label>
+          <input type="text" id="entry_fee_details" name="entry_fee_details" class="form-control" placeholder="e.g. 100 BDT per person">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="contact_info">Contact Info (Optional)</label>
+        <input type="text" id="contact_info" name="contact_info" class="form-control" placeholder="Phone or social media handle">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="photo">Venue Photo (Optional)</label>
+        <input type="file" id="photo" name="photo" class="form-control" accept="image/*">
+      </div>
+    </div>
+
+    <!-- Map Pin Picker (Leaflet) -->
+    <div class="card mb-6">
+      <div class="card-header">
+        <h3 style="font-size:0.9rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--gold);">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="16" height="16" style="vertical-align:-2px;margin-right:4px;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          Pin Location on Map *
+        </h3>
+        <span id="pin-coords-display" style="font-size:0.8rem;color:var(--text-muted);">Click map to drop pin</span>
+      </div>
+      <div id="pin-map" style="width:100%;height:360px;border-radius:var(--radius-md);overflow:hidden;"></div>
+      <p style="margin-top:8px;font-size:0.78rem;color:var(--text-muted);">Click anywhere on the map to place your venue pin. Drag to reposition.</p>
+      <input type="hidden" id="latitude" name="latitude">
+      <input type="hidden" id="longitude" name="longitude">
+    </div>
+
+    <!-- Match Selection -->
+    <div class="card mb-6">
+      <div class="card-header">
+        <h3 style="font-size:0.9rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--gold);">Which Matches Will You Screen?</h3>
+      </div>
+      {% if matches %}
+      <div style="display:flex;flex-direction:column;gap:8px;max-height:320px;overflow-y:auto;padding-right:4px;">
+        {% for match in matches %}
+        <label style="display:flex;align-items:center;gap:12px;padding:10px 12px;background:var(--bg-surface-2);border:1px solid var(--border);border-radius:var(--radius-md);cursor:pointer;transition:all 0.15s;" class="match-checkbox-row" id="match-select-{{ match.id }}">
+          <input type="checkbox" name="matches" value="{{ match.id }}" style="accent-color:var(--red);width:16px;height:16px;flex-shrink:0;">
+          <img src="https://flagcdn.com/w20/{{ match.get_team1_flag }}.png" alt="" width="20" height="14" style="border-radius:2px;">
+          <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.9rem;">{{ match.team1_name }}</span>
+          <span style="color:var(--text-muted);font-size:0.82rem;">vs</span>
+          <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.9rem;">{{ match.team2_name }}</span>
+          <img src="https://flagcdn.com/w20/{{ match.get_team2_flag }}.png" alt="" width="20" height="14" style="border-radius:2px;">
+          <span style="margin-left:auto;font-size:0.75rem;color:var(--text-secondary);white-space:nowrap;">{{ match.date_bst|date:"M j, g:i A" }}</span>
+        </label>
+        {% endfor %}
+      </div>
+      {% else %}
+      <p style="color:var(--text-muted);font-size:0.88rem;">No upcoming matches available.</p>
+      {% endif %}
+    </div>
+
+    <button type="submit" class="btn btn-primary btn-lg w-full" id="submit-venue-btn">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="18" height="18"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+      Add Venue to Map — Earn +10 Points
+    </button>
+    <p style="text-align:center;font-size:0.78rem;color:var(--text-muted);margin-top:12px;">
+      Your venue will appear on the map immediately as "Community Added". After community verification, it upgrades to "Verified".
+    </p>
+    <div style="padding-bottom:40px;"></div>
+  </form>
+</div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+<script>
+// ======= Leaflet Pin Picker =======
+const pinMap = L.map('pin-map', { zoomControl: true }).setView([23.8103, 90.4125], 12);
+
+L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+  attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
+  subdomains: 'abcd',
+  maxZoom: 20,
+}).addTo(pinMap);
+
+let pinMarker = null;
+
+const pinIcon = L.divIcon({
+  className: '',
+  html: `<div style="width:32px;height:32px;background:#DC2626;border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:2px solid white;box-shadow:0 3px 8px rgba(0,0,0,0.5);"></div>`,
+  iconSize: [32, 32],
+  iconAnchor: [16, 32],
+  popupAnchor: [0, -36],
+});
+
+pinMap.on('click', function(e) {
+  const { lat, lng } = e.latlng;
+
+  if (pinMarker) {
+    pinMarker.setLatLng([lat, lng]);
+  } else {
+    pinMarker = L.marker([lat, lng], { icon: pinIcon, draggable: true }).addTo(pinMap);
+    pinMarker.on('dragend', function() {
+      const pos = pinMarker.getLatLng();
+      setCoords(pos.lat, pos.lng);
+    });
+  }
+  setCoords(lat, lng);
+});
+
+function setCoords(lat, lng) {
+  document.getElementById('latitude').value = lat.toFixed(6);
+  document.getElementById('longitude').value = lng.toFixed(6);
+  const display = document.getElementById('pin-coords-display');
+  display.textContent = `${lat.toFixed(4)}, ${lng.toFixed(4)} ✓`;
+  display.style.color = 'var(--green)';
+}
+
+// Try geolocation to center map
+if (navigator.geolocation) {
+  navigator.geolocation.getCurrentPosition(
+    pos => pinMap.setView([pos.coords.latitude, pos.coords.longitude], 14),
+    () => {}
+  );
+}
+
+// Match checkbox highlight
+document.querySelectorAll('.match-checkbox-row').forEach(row => {
+  const cb = row.querySelector('input[type=checkbox]');
+  cb.addEventListener('change', () => {
+    row.style.borderColor = cb.checked ? 'var(--red)' : 'var(--border)';
+    row.style.background = cb.checked ? 'rgba(220,38,38,0.06)' : '';
+  });
+});
+
+// Validate pin on submit
+document.getElementById('add-venue-form').addEventListener('submit', e => {
+  if (!document.getElementById('latitude').value) {
+    e.preventDefault();
+    alert('Please click the map to drop a pin for your venue location.');
+    document.getElementById('pin-map').scrollIntoView({ behavior: 'smooth' });
+  }
+});
+</script>
+{% endblock %}
