@@ -11,32 +11,32 @@
       {{ match.get_status_display }}
     </span>
 
-    <div style="display:flex;align-items:center;justify-content:center;gap:32px;flex-wrap:wrap;margin-bottom:16px;">
+    <div class="match-hero-layout">
       <!-- Team 1 -->
-      <div style="text-align:center;min-width:120px;">
-        <img src="https://flagcdn.com/w80/{{ match.get_team1_flag }}.png" alt="{{ match.team1_name }}" width="80" height="57" style="border-radius:8px;display:block;margin:0 auto 10px;">
-        <h2 style="font-size:1.3rem;font-weight:800;letter-spacing:0.04em;">{{ match.team1_name }}</h2>
+      <div class="team-container">
+        <img src="https://flagcdn.com/w80/{{ match.get_team1_flag }}.png" alt="{{ match.team1_name }}" class="team-hero-flag">
+        <h2 class="team-hero-name">{{ match.team1_name }}</h2>
       </div>
 
       <!-- Score -->
-      <div style="text-align:center;min-width:120px;">
-        <div style="font-family:'Barlow Condensed',sans-serif;font-size:3rem;font-weight:900;color:var(--text-primary);line-height:1;">
+      <div class="score-container">
+        <div class="score-center">
           {% if match.status == 'COMPLETED' or match.status == 'LIVE' %}
             {{ match.team1_score|default:0 }}&nbsp;–&nbsp;{{ match.team2_score|default:0 }}
           {% else %}
             VS
           {% endif %}
         </div>
-        <div style="font-size:0.8rem;color:var(--text-secondary);margin-top:6px;">
+        <div class="score-meta">
           {{ match.date_bst|date:"D, M j, Y · g:i A" }} BST<br>
-          <span style="color:var(--text-muted);">{{ match.stadium }}{% if match.city %}, {{ match.city }}{% endif %}</span>
+          <span class="stadium-meta">{{ match.stadium }}{% if match.city %}, {{ match.city }}{% endif %}</span>
         </div>
       </div>
 
       <!-- Team 2 -->
-      <div style="text-align:center;min-width:120px;">
-        <img src="https://flagcdn.com/w80/{{ match.get_team2_flag }}.png" alt="{{ match.team2_name }}" width="80" height="57" style="border-radius:8px;display:block;margin:0 auto 10px;">
-        <h2 style="font-size:1.3rem;font-weight:800;letter-spacing:0.04em;">{{ match.team2_name }}</h2>
+      <div class="team-container">
+        <img src="https://flagcdn.com/w80/{{ match.get_team2_flag }}.png" alt="{{ match.team2_name }}" class="team-hero-flag">
+        <h2 class="team-hero-name">{{ match.team2_name }}</h2>
       </div>
     </div>
 
@@ -45,19 +45,19 @@
 
   <!-- Predict Winner -->
   {% if match.status == 'UPCOMING' and user.is_authenticated %}
-  <div class="card mb-6">
-    <div class="card-header">
-      <h3 style="font-size:1rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;">
+  <div class="card mb-6" style="text-align: center;">
+    <div class="card-header" style="border-bottom: none; padding-bottom: 0;">
+      <h3 style="font-size:1rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;display:flex;align-items:center;justify-content:center;">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="18" height="18" style="vertical-align:-3px;margin-right:6px;color:var(--gold);"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/></svg>
         Predict the Winner
       </h3>
     </div>
-    <div style="display:flex;gap:12px;flex-wrap:wrap;">
+    <div class="predict-buttons">
       <button class="btn btn-secondary" id="predict-team1" onclick="submitPrediction('{{ match.team1_code }}', this)">
         <img src="https://flagcdn.com/w20/{{ match.get_team1_flag }}.png" alt="" width="20" height="14" style="border-radius:2px;">
         {{ match.team1_name }}
       </button>
-      <button class="btn btn-secondary" id="predict-draw" onclick="submitPrediction('DRAW', this)" style="background:var(--bg-surface-2);">
+      <button class="btn btn-secondary" id="predict-draw" onclick="submitPrediction('DRAW', this)" style="background:var(--bg-surface-2); color:#000; font-weight:700;">
         Draw
       </button>
       <button class="btn btn-secondary" id="predict-team2" onclick="submitPrediction('{{ match.team2_code }}', this)">
@@ -65,7 +65,7 @@
         {{ match.team2_name }}
       </button>
     </div>
-    <div id="predict-msg" style="margin-top:10px;font-size:0.85rem;color:var(--green);display:none;">
+    <div id="predict-msg" style="margin-top:10px;font-size:0.85rem;color:var(--green);display:none;text-align:center;">
       ✓ Prediction saved! +bonus points if correct.
     </div>
   </div>
@@ -78,7 +78,7 @@
       <h3 style="font-size:1rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;">Match Mood Poll</h3>
     </div>
     {% if user.is_authenticated %}
-    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;" id="poll-buttons">
+    <div class="poll-buttons" id="poll-buttons">
       <button class="btn btn-green btn-sm" onclick="submitMood('AMAZING')">Amazing 🔥</button>
       <button class="btn btn-gold btn-sm" onclick="submitMood('DECENT')">Decent 👍</button>
       <button class="btn btn-outline btn-sm" onclick="submitMood('DISAPPOINTING')">Disappointing 😞</button>
