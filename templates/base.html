@@ -84,7 +84,11 @@
     </li>
     <li class="nav-mobile-only">
       <a href="/profile/{{ user.username }}/" class="nav-link" id="nav-profile-mobile">
-        <span class="profile-avatar-default" style="width:22px;height:22px;font-size:0.7rem;border-width:2px;flex-shrink:0;">{{ user.username|slice:":1"|upper }}</span>
+        {% if user.profile.avatar %}
+          <img src="{{ user.profile.avatar.url }}" alt="{{ user.username }}" style="width:22px;height:22px;border-radius:50%;object-fit:cover;border:1px solid var(--gold);flex-shrink:0;">
+        {% else %}
+          <span class="profile-avatar-default" style="width:22px;height:22px;font-size:0.7rem;border-width:2px;flex-shrink:0;">{{ user.username|slice:":1"|upper }}</span>
+        {% endif %}
         {{ user.username }}
       </a>
     </li>
@@ -121,8 +125,12 @@
       <a href="/venues/add/" class="btn btn-primary btn-sm nav-desktop-only" id="nav-add-venue">+ Add Venue</a>
 
       <!-- User Avatar (desktop only) -->
-      <a href="/profile/{{ user.username }}/" class="profile-avatar-default nav-desktop-only" style="width:36px;height:36px;font-size:1rem;border-width:2px;" id="nav-profile" title="{{ user.username }}">
-        {{ user.username|slice:":1"|upper }}
+      <a href="/profile/{{ user.username }}/" class="nav-desktop-only" style="display:flex;align-items:center;justify-content:center;text-decoration:none;" id="nav-profile" title="{{ user.username }}">
+        {% if user.profile.avatar %}
+          <img src="{{ user.profile.avatar.url }}" alt="{{ user.username }}" style="width:36px;height:36px;border-radius:50%;object-fit:cover;border:2px solid var(--gold);transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+        {% else %}
+          <span class="profile-avatar-default" style="width:36px;height:36px;font-size:1rem;border-width:2px;">{{ user.username|slice:":1"|upper }}</span>
+        {% endif %}
       </a>
     {% else %}
       <a href="/login/" class="btn btn-ghost btn-sm nav-desktop-only" id="nav-login">Sign In</a>
