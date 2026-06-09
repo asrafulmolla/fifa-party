@@ -14,7 +14,18 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-fifa-party-bd-2026-ke
 
 DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    '.vercel.app',
+    '.onrender.com',
+    os.environ.get('RENDER_EXTERNAL_HOSTNAME', ''),
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://*.vercel.app',
+    'https://*.onrender.com',
+]
 
 # Application definition
 INSTALLED_APPS = [
