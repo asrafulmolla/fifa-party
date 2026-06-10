@@ -19,13 +19,22 @@ except Exception as e:
     raise
 
 from django.conf import settings
+from django.core.management import call_command
 
 _using_sqlite = 'sqlite' in settings.DATABASES['default'].get('ENGINE', '')
 
-if _using_sqlite:
-    from django.core.management import call_command
-    from django.db import connection
+# Collect static files into /tmp/staticfiles on cold start
+_static_root = str(settings.STATIC_ROOT)
+if not os.path.exists(os.path.join(_static_root, 'css')):
+    try:
+        call_command('collectstatic', '--noinput', '--clear', verbosity=0)
+        print(f"[vercel] collectstatic OK → {_static_root}")
+    except Exception as e:
+        print(f"[vercel] collectstatic warning: {e}")
 
+# On SQLite (no DATABASE_URL set), migrate + seed on cold start
+if _using_sqlite:
+    from django.db import connection
     try:
         with connection.cursor() as cursor:
             cursor.execute("SELECT COUNT(*) FROM matches_match")

@@ -112,7 +112,8 @@ USE_TZ = True
 # Static & Media
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
-STATIC_ROOT = BASE_DIR / 'staticfiles'
+# On Vercel the project root is read-only; write collected files to /tmp
+STATIC_ROOT = Path('/tmp/staticfiles') if IS_VERCEL else BASE_DIR / 'staticfiles'
 # Use CompressedStaticFilesStorage on Vercel (no manifest needed — avoids crash
 # when staticfiles/ hasn't been collected). Use CompressedManifest locally.
 if IS_VERCEL:
