@@ -8,7 +8,9 @@
   <title>{% block title %}{{ page_title|default:"FIFA Party Bangladesh" }}{% endblock %}</title>
 
   {% load static %}
-  <link rel="icon" type="image/svg+xml" href="{% static 'images/football.svg' %}">
+  <link rel="icon" type="image/png" href="{% static 'favicon.png' %}">
+  <link rel="shortcut icon" href="{% static 'favicon.ico' %}">
+  <link rel="apple-touch-icon" href="{% static 'favicon.png' %}">
   <link rel="stylesheet" href="{% static 'css/main.css' %}">
   {% block extra_css %}{% endblock %}
 
