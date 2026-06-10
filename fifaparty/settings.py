@@ -5,10 +5,12 @@ Django settings for fifaparty project — FIFA Watch Party Finder Bangladesh.
 from pathlib import Path
 import os
 from dotenv import load_dotenv
-
-load_dotenv()
+import dj_database_url
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Load environment variables from .env file
+load_dotenv(BASE_DIR / '.env')
 
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-fifa-party-bd-2026-key-change-in-production')
 
@@ -80,11 +82,17 @@ WSGI_APPLICATION = 'fifaparty.wsgi.application'
 _DB_PATH = Path('/tmp') / 'db.sqlite3' if os.environ.get('VERCEL') else BASE_DIR / 'db.sqlite3'
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': _DB_PATH,
-    }
+    'default': dj_database_url.config(
+        default=f'sqlite:///{_DB_PATH}',
+        conn_max_age=600
+    )
 }
+
+# If using PostgreSQL, ensure SSL mode is configured
+if DATABASES['default'].get('ENGINE') == 'django.db.backends.postgresql':
+    DATABASES['default']['OPTIONS'] = {
+        'sslmode': 'require',
+    }
 
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
