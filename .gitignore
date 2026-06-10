@@ -69,3 +69,4 @@ design-system/
 # Compiled assets
 *.css.map
 *.js.map
+.vercel
