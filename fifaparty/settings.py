@@ -14,15 +14,18 @@ load_dotenv(BASE_DIR / '.env')
 
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-fifa-party-bd-2026-key-change-in-production')
 
-DEBUG = os.environ.get('DEBUG', 'True') == 'True'
+# On Vercel, disable DEBUG and use secure settings
+IS_VERCEL = os.environ.get('VERCEL', False)
+DEBUG = not IS_VERCEL and os.environ.get('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = [
+_extra_host = os.environ.get('RENDER_EXTERNAL_HOSTNAME', '')
+ALLOWED_HOSTS = list(filter(None, [
     'localhost',
     '127.0.0.1',
     '.vercel.app',
     '.onrender.com',
-    os.environ.get('RENDER_EXTERNAL_HOSTNAME', ''),
-]
+    _extra_host,
+]))
 
 CSRF_TRUSTED_ORIGINS = [
     'https://*.vercel.app',
@@ -84,15 +87,15 @@ _DB_PATH = Path('/tmp') / 'db.sqlite3' if os.environ.get('VERCEL') else BASE_DIR
 DATABASES = {
     'default': dj_database_url.config(
         default=f'sqlite:///{_DB_PATH}',
-        conn_max_age=600
+        conn_max_age=600,
+        conn_health_checks=True,
     )
 }
 
-# If using PostgreSQL, ensure SSL mode is configured
+# If using PostgreSQL (Neon), enforce SSL
 if DATABASES['default'].get('ENGINE') == 'django.db.backends.postgresql':
-    DATABASES['default']['OPTIONS'] = {
-        'sslmode': 'require',
-    }
+    DATABASES['default'].setdefault('OPTIONS', {})
+    DATABASES['default']['OPTIONS']['sslmode'] = 'require'
 
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
