@@ -26,6 +26,7 @@ ALLOWED_HOSTS = list(filter(None, [
     '.onrender.com',
     '.pythonanywhere.com',
     '.koyeb.app',
+    '.hf.space',
     'mdasrafulmolla.pythonanywhere.com',
     _extra_host,
 ]))
@@ -35,6 +36,7 @@ CSRF_TRUSTED_ORIGINS = [
     'https://*.onrender.com',
     'https://*.pythonanywhere.com',
     'https://*.koyeb.app',
+    'https://*.hf.space',
     'https://mdasrafulmolla.pythonanywhere.com',
 ]
 
