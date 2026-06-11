@@ -25,6 +25,7 @@ ALLOWED_HOSTS = list(filter(None, [
     '.vercel.app',
     '.onrender.com',
     '.pythonanywhere.com',
+    '.koyeb.app',
     'mdasrafulmolla.pythonanywhere.com',
     _extra_host,
 ]))
@@ -33,6 +34,7 @@ CSRF_TRUSTED_ORIGINS = [
     'https://*.vercel.app',
     'https://*.onrender.com',
     'https://*.pythonanywhere.com',
+    'https://*.koyeb.app',
     'https://mdasrafulmolla.pythonanywhere.com',
 ]
 
